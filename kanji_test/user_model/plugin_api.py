@@ -15,8 +15,10 @@ from cjktools import scripts
 from kanji_test import settings
 from kanji_test.user_model import models
 
+
 class UpdateError(Exception):
     pass
+
 
 class UserModelPlugin(object):
     """
@@ -31,6 +33,7 @@ class UserModelPlugin(object):
     def update(self, _response):
         "Updates this error model from a user's response."
         raise Exception('not implemented')
+
 
 class SegmentedSeqPlugin(UserModelPlugin):
     """

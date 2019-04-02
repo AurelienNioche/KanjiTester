@@ -20,6 +20,7 @@ from kanji_test.util import models as util_models
 from kanji_test.util.probability import ProbDist, SeqDist
 from kanji_test.util import alignment
 
+
 class Syllabus(models.Model):
     tag = models.CharField(max_length=100, unique=True,
         help_text="A unique name for this syllabus.")

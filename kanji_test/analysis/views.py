@@ -11,12 +11,13 @@ import csv
 import operator
 import numpy
 import itertools
+import json
 
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.models import User
 from django.http import HttpResponse, Http404
-from django.utils import simplejson
+
 from django.conf import settings
 from simplestats import basic_stats, mean
 
@@ -88,7 +89,7 @@ def data(request, name=None, format=None):
             mimetype = 'text/html'
         else:
             mimetype = 'application/json'
-        return HttpResponse(simplejson.dumps(chart.get_url()),
+        return HttpResponse(json.dumps(chart.get_url()),
                 mimetype=mimetype)
 
     elif format == 'csv':

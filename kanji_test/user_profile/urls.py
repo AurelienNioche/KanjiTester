@@ -7,10 +7,12 @@
 #  Copyright 2008 Lars Yencken. All rights reserved.
 #
 
-from django.conf.urls.defaults import *
+from django.conf.urls import url
 
-urlpatterns = patterns('kanji_test.user_profile.views',
-    url(r'^$', 'create_profile', name='userprofile_profile'),
+from kanji_test.user_profile.views import create_profile
+
+urlpatterns = (  # patterns('kanji_test.user_profile.views',
+    url(r'^$', create_profile, name='userprofile_profile'),
 )
 
 # vim: ts=4 sw=4 sts=4 et tw=78:

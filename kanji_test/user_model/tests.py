@@ -13,6 +13,7 @@ from django.contrib.auth import models as auth_models
 
 from kanji_test.user_model import models
 
+
 class RegistrationTest(TestCase):
     fixtures = ['test_register']
     def test_registration(self):

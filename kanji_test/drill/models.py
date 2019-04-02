@@ -15,7 +15,7 @@ from django.core.mail import send_mail
 from django.contrib.auth import models as auth_models
 from django.conf import settings
 from django import forms
-from cjktools.exceptions import NotYetImplementedError
+# from cjktools.exceptions import NotYetImplementedError
 from cjktools import scripts
 
 from kanji_test.util import html
@@ -101,12 +101,14 @@ class Question(models.Model):
                 self.pivot,
             )
 
-    def instructions():
-        def fget(self):
-            return INSTRUCTIONS[self.question_type] % \
+    def instructions(self):
+        return INSTRUCTIONS[self.question_type] % \
                     self.get_pivot_type_display()
-        return locals()
-    instructions = property(**instructions())
+        # def fget(self):
+        #     return INSTRUCTIONS[self.question_type] % \
+        #             self.get_pivot_type_display()
+        # return locals()
+    # instructions = property(**instructions(self))
 
     def get_pivot_item(self):
         if self.pivot_type == 'k':
@@ -128,18 +130,19 @@ class Question(models.Model):
     
     def as_html(self):
         """Renders an html form element for the question."""
-        raise NotYetImplementedError
+        raise NotImplementedError
 
 class MultipleChoiceQuestion(Question):
     """A single question about a kanji or a word."""
     stimulus = models.CharField(max_length=400)
     
-    def answer():
-        doc = "The correct answer to this question."
-        def fget(self):
-            return self.options.get(is_correct=True)
-        return locals()
-    answer = property(**answer())
+    def answer(self):
+        # doc = "The correct answer to this question."
+        return self.options.get(is_correct=True)
+    #     def fget(self):
+    #         return self.options.get(is_correct=True)
+    #     return locals()
+    # answer = property(**answer())
     
     def _get_stimulus_class(self, stimulus):
         if scripts.script_types(stimulus) == scripts.Script.Ascii:
@@ -157,7 +160,7 @@ class MultipleChoiceQuestion(Question):
 
         annotation_map = annotation_map or {}
         if annotation_map and len(annotation_map) != len(distractor_values) + 1:
-            raise ValueEror('need annotation_map for every distractor')
+            raise ValueError('need annotation_map for every distractor')
 
         if len(set(distractor_values + [answer])) < len(distractor_values) + 1:
             raise ValueError('all option values must be unique')
@@ -199,7 +202,7 @@ class Response(models.Model):
         abstract = False
         
     def is_correct(self):
-        raise NotYetImplementedError
+        raise NotImplementedError
 
 class MultipleChoiceResponse(Response):
     """A response to a multiple choice question."""
@@ -251,7 +254,7 @@ class TestSet(models.Model):
     ordered_questions = property(ordered_questions)
 
     def ordered_responses(self):
-        response_list = lits(self.responses.order_by('question__id'))
+        response_list = list(self.responses.order_by('question__id'))
         if self.questions.count() != len(response_list):
             raise ValueError("need full coverage")
         random.seed(self.random_seed)

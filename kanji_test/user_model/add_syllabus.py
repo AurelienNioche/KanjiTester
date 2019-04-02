@@ -15,7 +15,7 @@ from cjktools import scripts
 from cjktools import alternations
 import consoleLog
 from django.contrib.auth import models as auth_models
-from checksum.models import Checksum
+# from checksum.models import Checksum
 
 from kanji_test.lexicon import models as lexicon_models
 from kanji_test.user_model import models as usermodel_models

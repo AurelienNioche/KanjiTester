@@ -9,51 +9,170 @@
 
 """Django settings for kanji_test project."""
 
-from os import path
+import os
 
-PROJECT_NAME = 'Kanji Tester'
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = '!d*%m--x1di4wn#^7$z89-sayp22ik#szexlz^+de_4!l99@e^'
+
+# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
-ADMINS = (
-    # ('Your Name', 'your_email@domain.com'),
-)
+ALLOWED_HOSTS = []
 
-MANAGERS = ADMINS
 
-DATABASE_ENGINE = ''           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = ''             # Or path to database file if using sqlite3.
-DATABASE_USER = ''             # Not used with sqlite3.
-DATABASE_PASSWORD = ''         # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
-DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
+# Application definition
 
-# Location of any additional resources 
-#DATA_DIR = ''
+INSTALLED_APPS = [
+    'kanji_test.tutor',
+    'kanji_test.lexicon',
+    'kanji_test.drill',
+    # 'kanji_test.util',
+    'kanji_test.user_model',
+    # 'kanji_test.plugins.visual_similarity',
+    # 'kanji_test.plugins.reading_alt',
+    # 'kanji_test.plugins.reading_alt.hierarchy',
+    'kanji_test.user_profile',
+    # 'kanji_test.analysis',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+]
 
-# Local time zone for this installation. Choices can be found here:
-# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# If running in a Windows environment this must be set to the same as your
-# system time zone.
-TIME_ZONE = 'Australia/Melbourne'
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
 
-# Language code for this installation. All choices can be found here:
-# http://www.i18nguy.com/unicode/language-identifiers.html
+ROOT_URLCONF = 'kanji_test.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = 'mysite.wsgi.application'
+
+
+# Database
+# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+
+
+# Password validation
+# https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+
+# Internationalization
+# https://docs.djangoproject.com/en/1.11/topics/i18n/
+
 LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'UTC'
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = True
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.11/howto/static-files/
+
+STATIC_URL = '/static/'
+
+# from os import path
+#
+# PROJECT_NAME = 'Kanji Tester'
+#
+# DEBUG = True
+# TEMPLATE_DEBUG = DEBUG
+#
+# ADMINS = (
+#     # ('Your Name', 'your_email@domain.com'),
+# )
+#
+# MANAGERS = ADMINS
+#
+# DATABASE_ENGINE = ''           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+# DATABASE_NAME = ''             # Or path to database file if using sqlite3.
+# DATABASE_USER = ''             # Not used with sqlite3.
+# DATABASE_PASSWORD = ''         # Not used with sqlite3.
+# DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
+# DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
+
+# Location of any additional resources
+DATA_DIR = ''
+#
+# # Local time zone for this installation. Choices can be found here:
+# # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+# # although not all choices may be available on all operating systems.
+# # If running in a Windows environment this must be set to the same as your
+# # system time zone.
+# TIME_ZONE = 'Australia/Melbourne'
+#
+# # Language code for this installation. All choices can be found here:
+# # http://www.i18nguy.com/unicode/language-identifiers.html
+# LANGUAGE_CODE = 'en-us'
 
 SITE_ID = 1
 
-# If you set this to False, Django will make some optimizations so as not
-# to load the internationalization machinery.
-USE_I18N = True
+# # If you set this to False, Django will make some optimizations so as not
+# # to load the internationalization machinery.
+# USE_I18N = True
 
-PROJECT_ROOT = path.abspath(path.dirname(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = path.join(PROJECT_ROOT, 'media')
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -65,15 +184,15 @@ MEDIA_URL = '/media/'
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/media/admin/'
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'dc6hz00zcf8wym4hsx0jf-%c)_hq%n)rt55@*!(*3y9^48pj-s'
-
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
-#     'django.template.loaders.eggs.load_template_source',
-)
+# # Make this unique, and don't share it with anybody.
+# SECRET_KEY = 'dc6hz00zcf8wym4hsx0jf-%c)_hq%n)rt55@*!(*3y9^48pj-s'
+#
+# # List of callables that know how to import templates from various sources.
+# TEMPLATE_LOADERS = (
+#     'django.template.loaders.filesystem.load_template_source',
+#     'django.template.loaders.app_directories.load_template_source',
+# #     'django.template.loaders.eggs.load_template_source',
+# )
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.gzip.GZipMiddleware',
@@ -93,38 +212,38 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'kanji_test.context_processors.basic_vars',
 )
 
-ROOT_URLCONF = 'kanji_test.urls'
+# ROOT_URLCONF = 'kanji_test.urls'
 
 TEMPLATE_DIRS = (
-    path.join(PROJECT_ROOT, 'templates'),
+    os.path.join(PROJECT_ROOT, 'templates'),
 )
 
 FIXTURE_DIRS = (
-    path.join(PROJECT_ROOT, 'fixtures'),
+    os.path.join(PROJECT_ROOT, 'fixtures'),
 )
 
-INSTALLED_APPS = (
-    'django.contrib.auth',
-    'django.contrib.admin',
-    'django.contrib.contenttypes',
-    'django.contrib.humanize',
-    'django.contrib.messages',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'kanji_test.tutor',
-    'kanji_test.lexicon',
-    'kanji_test.drill',
-    'kanji_test.util',
-    'kanji_test.user_model',
-    'kanji_test.plugins.visual_similarity',
-    'kanji_test.plugins.reading_alt',
-    'kanji_test.plugins.reading_alt.hierarchy',
-    'kanji_test.user_profile',
-    'kanji_test.analysis',
-    'checksum',
-    'registration',
-    'south',
-)
+# INSTALLED_APPS = (
+#     'django.contrib.auth',
+#     'django.contrib.admin',
+#     'django.contrib.contenttypes',
+#     'django.contrib.humanize',
+#     'django.contrib.messages',
+#     'django.contrib.sessions',
+#     'django.contrib.sites',
+#     'kanji_test.tutor',
+#     'kanji_test.lexicon',
+#     'kanji_test.drill',
+#     'kanji_test.util',
+#     'kanji_test.user_model',
+#     'kanji_test.plugins.visual_similarity',
+#     'kanji_test.plugins.reading_alt',
+#     'kanji_test.plugins.reading_alt.hierarchy',
+#     'kanji_test.user_profile',
+#     'kanji_test.analysis',
+#     'checksum',
+#     'registration',
+#     'south',
+# )
 
 TEST_DATABASE_CHARSET = 'utf8'
 TEST_DATABASE_COLLATION = 'utf8_general_ci'
