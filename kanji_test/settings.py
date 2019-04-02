@@ -56,14 +56,17 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'kanji_test.middleware.TagLanguageMiddleware',
 ]
 
 ROOT_URLCONF = 'kanji_test.urls'
 
+# PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -76,17 +79,25 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'mysite.wsgi.application'
+WSGI_APPLICATION = 'kanji_test.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'KanjiTester',
+            'USER': 'admin',
+            'PASSWORD': 'password',
+            'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+            'PORT': '3306',
+        }
 }
 
 
@@ -194,33 +205,33 @@ ADMIN_MEDIA_PREFIX = '/media/admin/'
 # #     'django.template.loaders.eggs.load_template_source',
 # )
 
-MIDDLEWARE_CLASSES = (
-    'django.middleware.gzip.GZipMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.middleware.doc.XViewMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'kanji_test.middleware.TagLanguageMiddleware',
-)
+# MIDDLEWARE_CLASSES = (
+#     'django.middleware.gzip.GZipMiddleware',
+#     'django.middleware.common.CommonMiddleware',
+#     'django.contrib.sessions.middleware.SessionMiddleware',
+#     'django.contrib.auth.middleware.AuthenticationMiddleware',
+#     'django.middleware.doc.XViewMiddleware',
+#     'django.contrib.messages.middleware.MessageMiddleware',
+#     'kanji_test.middleware.TagLanguageMiddleware',
+# )
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.contrib.messages.context_processors.messages',
-    'kanji_test.context_processors.basic_vars',
-)
+# TEMPLATE_CONTEXT_PROCESSORS = (
+#     'django.core.context_processors.auth',
+#     'django.core.context_processors.debug',
+#     'django.core.context_processors.i18n',
+#     'django.contrib.messages.context_processors.messages',
+#     'kanji_test.context_processors.basic_vars',
+# )
 
 # ROOT_URLCONF = 'kanji_test.urls'
 
-TEMPLATE_DIRS = (
-    os.path.join(PROJECT_ROOT, 'templates'),
-)
-
-FIXTURE_DIRS = (
-    os.path.join(PROJECT_ROOT, 'fixtures'),
-)
+# TEMPLATE_DIRS = (
+#     os.path.join(PROJECT_ROOT, 'templates'),
+# )
+#
+# FIXTURE_DIRS = (
+#     os.path.join(PROJECT_ROOT, 'fixtures'),
+# )
 
 # INSTALLED_APPS = (
 #     'django.contrib.auth',
