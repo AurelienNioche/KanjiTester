@@ -10,6 +10,7 @@
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 
+
 def profile_required(view_method):
     """
     A decorator which indicates that a user profile is required for the given

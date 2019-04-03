@@ -9,14 +9,17 @@
 
 "The basic api for generating questions."
 
-from cjktools.exceptions import NotYetImplementedError
+# from cjktools.exceptions import NotYetImplementedError
 from cjktools import scripts
 from django.core.exceptions import ObjectDoesNotExist
 
 from kanji_test.drill import models
 from kanji_test.user_model import models as usermodel_models
 
-class UnsupportedItem(Exception): pass
+
+class UnsupportedItem(Exception):
+    pass
+
 
 class QuestionFactoryI(object):
     """An abstract interface for factories which build questions."""
@@ -89,11 +92,12 @@ class QuestionFactoryI(object):
 
     def get_word_question(self, partial_lexeme, user):
         """Constructs and returns a new question based on the given word."""
-        raise NotYetImplementedError
+        raise NotImplementedError
 
     def get_kanji_question(self, partial_kanji, user):
         """Constructs and returns a new question based on the given kanji."""
-        raise NotYetImplementedError
+        raise NotImplementedError
+
 
 class MultipleChoiceFactoryI(QuestionFactoryI):
     """An abstract factory for multiple choice questions."""

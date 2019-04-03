@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'registration'
 ]
 
 MIDDLEWARE = [
@@ -139,6 +140,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
+PROJECT_NAME = 'Kanji Tester'
+
 # from os import path
 #
 # PROJECT_NAME = 'Kanji Tester'
@@ -179,21 +186,21 @@ SITE_ID = 1
 # # to load the internationalization machinery.
 # USE_I18N = True
 
-PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-
-# Absolute path to the directory that holds media.
-# Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
-
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash if there is a path component (optional in other cases).
-# Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = '/media/'
-
-# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
-# trailing slash.
-# Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/admin/'
+# PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+#
+# # Absolute path to the directory that holds static.
+# # Example: "/home/static/static.lawrence.com/"
+# MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'static')
+#
+# # URL that handles the static served from MEDIA_ROOT. Make sure to use a
+# # trailing slash if there is a path component (optional in other cases).
+# # Examples: "http://media.lawrence.com", "http://example.com/media/"
+# MEDIA_URL = '/static/'
+#
+# # URL prefix for admin static -- CSS, JavaScript and images. Make sure to use a
+# # trailing slash.
+# # Examples: "http://foo.com/media/", "/static/".
+# ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # # Make this unique, and don't share it with anybody.
 # SECRET_KEY = 'dc6hz00zcf8wym4hsx0jf-%c)_hq%n)rt55@*!(*3y9^48pj-s'
@@ -304,7 +311,7 @@ N_ROWS_PER_INSERT = 10000
 DEFAULT_LANGUAGE_CODE = 'eng'
 UPDATE_EPSILON = 0.2
 
-# When True, enables the debugging media view.
+# When True, enables the debugging static view.
 DEPLOYED = False
 
 DEFAULT_FROM_EMAIL = 'Kanji Tester <kanjitester@gakusha.info>'

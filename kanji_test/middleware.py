@@ -12,13 +12,10 @@
 
 from cjktools import scripts
 
+
 class TagLanguageMiddleware(object):
     def __init__(self):
-        self.japanese_scripts = set([
-                scripts.Script.Katakana,
-                scripts.Script.Hiragana,
-                scripts.Script.Kanji,
-            ])
+        self.japanese_scripts = {scripts.Script.Katakana, scripts.Script.Hiragana, scripts.Script.Kanji}
 
     def process_response(self, request, response):
         if response.status_code != 200:

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
@@ -12,14 +13,14 @@
     {% endblock %}
   " />
 	<title>{{project_name}} | {% block title %}{% endblock %}</title>
-  <link rel="stylesheet" href="{{media_url}}css/blueprint/screen.css"
+  <link rel="stylesheet" href="{% static 'css/blueprint/screen.css'%}"
       type="text/css" media="screen, projection">
-  <link rel="stylesheet" href="{{media_url}}css/blueprint/print.css"
-      type="text/css" media="print">    
+  <link rel="stylesheet" href="{% static 'css/blueprint/print.css'%}"
+      type="text/css" media="print">
   <!--[if IE]><link rel="stylesheet" href="css/blueprint/ie.css"
   type="text/css" media="screen, projection"><![endif]-->
 
-  <link rel="stylesheet" href="{{media_url}}css/tutor.css" type="text/css"
+  <link rel="stylesheet" href="{% static 'css/tutor.css'%}" type="text/css"
     charset="utf-8" />
 	{% block extra_head %}
   {% endblock %}
@@ -36,33 +37,33 @@
         <p class="top bottom" align="right">
         {% block user_tools %}
           {% if user.is_anonymous %}
-            <a href="{% url registration_register %}">Register</a> or
-            <a href="{% url auth_login %}">Log-in</a>
+            <a href="{% url 'django_registration_register' %}">Register</a> or
+            <a href="{% url 'login' %}">Log-in</a>
           {% else %}
             Hello {{user.username}}.
-            <a href="{% url auth_logout %}">Log-out</a>
+            <a href="{% url 'logout' %}">Log-out</a>
           {% endif %}
         {% endblock %}
         </p>
       </div>
     </div>
-    
+
     <hr />
-        
+
     {% block super_content %}
     <div id="content" class="column span-19 last">
       {% block content %}
       {% endblock %}
     </div>
     {% endblock %}
-    
+
     <hr class="space" />
-    
+
     <hr />
-    
+
     <div id="footer" class="column span-19 last">
       <p class="small quiet" align="center">
-        <a class="quiet" href="{% url tutor_about %}">About</a>
+        <a class="quiet" href="{% url 'tutor_about' %}">About</a>
         |
         <a class="quiet" href="mailto:lars@yencken.org">Email feedback</a>
         |
@@ -70,16 +71,16 @@
       </p>
     </div>
   </div>
-{% if analytics_code %}
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-var pageTracker = _gat._getTracker("{{analytics_code}}");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-{% endif %}
+{#{% if analytics_code %}#}
+{#<script type="text/javascript">#}
+{#var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");#}
+{#document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));#}
+{#</script>#}
+{#<script type="text/javascript">#}
+{#try {#}
+{#var pageTracker = _gat._getTracker("{{analytics_code}}");#}
+{#pageTracker._trackPageview();#}
+{# } catch(err) {}</script>#}
+{#{% endif %}#}
 </body>
 </html>

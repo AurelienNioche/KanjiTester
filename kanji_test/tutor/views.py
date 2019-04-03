@@ -9,8 +9,7 @@
 
 import time
 
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.conf import settings
 
 from kanji_test.drill import models as drill_models
@@ -20,14 +19,12 @@ from kanji_test.user_model import models as usermodel_models
 from kanji_test.user_profile.decorators import profile_required
 from kanji_test.tutor import study_list
 
-#----------------------------------------------------------------------------#
 
 def welcome(request):
     """An alternative to the dashboard for users who aren't logged in."""
-    return render_to_response('tutor/welcome.html', {},
-            context_instance=RequestContext(request))
 
-#----------------------------------------------------------------------------#
+    return render(request, 'tutor/welcome.html', {'project_name': settings.PROJECT_NAME})
+
 
 @profile_required
 def dashboard(request):
@@ -44,10 +41,9 @@ def dashboard(request):
         context['kanji_chart'] = kanji_chart
     else:
         context['has_results'] = False
-    return render_to_response('tutor/dashboard.html', context,
-            context_instance=RequestContext(request))
 
-#----------------------------------------------------------------------------#
+    return render(request, 'tutor/dashboard.html', context)
+
 
 @profile_required
 def test_user(request):
@@ -59,8 +55,7 @@ def test_user(request):
         start_time = time.time()
         if request.method == 'POST' and 'n_questions' in request.POST:
             n_questions = int(request.POST['n_questions'])
-        test_set = drill_models.TestSet.from_user(request.user,
-                n_questions=n_questions)
+        test_set = drill_models.TestSet.from_user(request.user, n_questions=n_questions)
         form = TestSetForm(test_set)
         time_taken = time.time() - start_time
         context['time_taken'] = time_taken
@@ -75,10 +70,8 @@ def test_user(request):
     context['form'] = form
     context['syllabus'] = request.user.get_profile().syllabus
 
-    return render_to_response('tutor/test_set.html', context,
-            context_instance=RequestContext(request))
+    return render(request, 'tutor/test_set.html', context)
 
-#----------------------------------------------------------------------------#
 
 @profile_required
 def study(request):
@@ -108,13 +101,10 @@ def study(request):
     context['partial_lexemes'] = partial_lexemes
     context['all_correct'] = not partial_kanji and not partial_lexemes
     
-    return render_to_response('tutor/study.html', context,
-            context_instance=RequestContext(request))
+    return render(request, 'tutor/study.html', context)
 
-#----------------------------------------------------------------------------#
 
 def about(request):
-    return render_to_response('tutor/about.html', {},
-            context_instance=RequestContext(request))
+    return render(request, 'tutor/about.html', {'project_name': settings.PROJECT_NAME})
 
-#----------------------------------------------------------------------------#
+

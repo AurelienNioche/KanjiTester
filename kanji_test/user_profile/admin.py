@@ -11,9 +11,11 @@ from django.contrib import admin
 
 from kanji_test.user_profile import models
 
+
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'syllabus', 'first_language', 'second_languages')
     list_filter = ('first_language', 'syllabus')
+
 
 admin.site.register(models.UserProfile, UserProfileAdmin)
 

@@ -12,7 +12,7 @@ import django.views.static
 from kanji_test import settings
 
 def media(request):
-    "A static view which renders media. Not to be used in deployment."
+    "A static view which renders static. Not to be used in deployment."
     return django.views.static.serve(
             request,
             request.path[len(settings.MEDIA_URL):],

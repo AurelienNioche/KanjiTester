@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Test {{syllabus.tag}} knowledge{% endblock %}
 
@@ -9,7 +10,7 @@
   label { font-weight:normal; }
   @font-face {
     font-family: Epson-Kyokasho;
-    src: local('Epson-Kyokasho'), url('{{media_url}}fonts/Epson-Kyokasho.otf');
+    src: local('Epson-Kyokasho'), url("{%  static 'fonts/Epson-Kyokasho.otf'%}");
   }
   span[lang='ja'] {
     font-family: "Epson-Kyokasho", "mincho", serif;
@@ -22,13 +23,13 @@
 <h2>Testing {{syllabus.tag}}</h2>
 {% if form.has_answers %}
   <p class="score">Your score: {{form.n_correct}}/{{form.n_questions}}</p>
-  <form method="POST" action="{% url tutor_study %}" class="navigation">
+  <form method="POST" action="{% url 'tutor_study' %}" class="navigation">
     {% csrf_token %}
     <input type="hidden" name="test_set_id" value="{{test_set.id}}">
     <input type="submit" value="Study mistakes"
       {% if all_correct %}disabled="disabled"{% endif %}>
   </form>
-  <form method="GET" action="{% url tutor_dashboard %}" class="navigation">
+  <form method="GET" action="{% url 'tutor_dashboard' %}" class="navigation">
     <input type="submit" value="Back to dashboard">
   </form>
 {% else %}
@@ -46,7 +47,7 @@
   </table>
 {% if form.has_answers %}
 </form>
-<form method="POST" action="{% url tutor_study %}" class="navigation">
+<form method="POST" action="{% url 'tutor_study' %}" class="navigation">
 {% csrf_token %}
 <p>
   <input type="hidden" name="test_set_id" value="{{test_set.id}}">
@@ -54,7 +55,7 @@
     {% if all_correct %}disabled="disabled"{% endif %}>
 </p>
 </form>
-<form method="GET" action="{% url tutor_dashboard %}" class="navigation">
+<form method="GET" action="{% url 'tutor_dashboard' %}" class="navigation">
 <p>
   <input type="submit" value="Back to dashboard">
 </p>

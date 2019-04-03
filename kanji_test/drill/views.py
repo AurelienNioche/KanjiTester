@@ -18,6 +18,7 @@ from django.utils.encoding import force_unicode
 
 from kanji_test.drill import models
 
+
 class QuestionField(forms.ChoiceField):
     def __init__(self, question):
         options = list(question.options.all())

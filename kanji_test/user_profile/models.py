@@ -16,9 +16,10 @@ from django.contrib.auth.models import User
 
 from kanji_test.user_model.models import Syllabus
 
+
 class UserProfile(models.Model):
     """Basic model of the user's kanji knowledge and study goals."""
-    user = models.ForeignKey(User, unique=True)
+    user = models.ForeignKey(User)
     syllabus = models.ForeignKey(Syllabus)
     first_language = models.CharField(max_length=100)
     second_languages = models.CharField(max_length=200, null=True, blank=True)

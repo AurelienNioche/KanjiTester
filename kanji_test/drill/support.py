@@ -13,6 +13,7 @@ Supporting methods for drill plugins.
 
 from kanji_test import settings
 
+
 def build_kanji_options(kanji, error_dist, exclude_set=None, adaptive=True):
     exclude_set = set(exclude_set or [])
     annotation_map = {}
@@ -28,11 +29,12 @@ def build_kanji_options(kanji, error_dist, exclude_set=None, adaptive=True):
         for result in potentials:
             exclude_set.add(result)
             distractors.append(result)
-            annotation_map[result] = result # No segments
+            annotation_map[result] = result  # No segments
             if len(distractors) == settings.N_DISTRACTORS:
                 break
 
     return distractors, annotation_map
+
 
 def build_word_options(segments, error_dist, exclude_set=None, adaptive=True):
     """

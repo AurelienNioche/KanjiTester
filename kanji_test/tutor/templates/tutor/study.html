@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Revision{% endblock %}
 
@@ -6,7 +7,7 @@
 <style type="text/css">
   @font-face {
     font-family: Epson-Kyokasho;
-    src: local('Epson-Kyokasho'), url('{{media_url}}fonts/Epson-Kyokasho.otf');
+    src: local('Epson-Kyokasho'), url("{%  static 'fonts/Epson-Kyokasho.otf'%}");
   }
   span[lang='ja'] {
     font-family: "Epson-Kyokasho", "mincho", serif;
@@ -96,7 +97,7 @@
     </table>
   {% endif %}
 
-  <form action="{% url tutor_dashboard %}" method="GET">
+  <form action="{% url 'tutor_dashboard' %}" method="GET">
   <p><input type="submit" value="Back to dashboard"></p>
   </form>
 {% endblock %}

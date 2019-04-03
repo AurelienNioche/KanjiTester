@@ -18,13 +18,14 @@ admin.autodiscover()
 
 urlpatterns = (#'',
         url(r'^admin/', include(admin.site.urls)),
-        # (r'^accounts/', include('registration.urls')),
+        url(r'^accounts/', include('django_registration.backends.activation.urls')),
+        url(r'^accounts/', include('django.contrib.auth.urls')),
     )
 
-# Optional media view for debugging and testing.
+# Optional static view for debugging and testing.
 if not settings.DEPLOYED:
     urlpatterns += (
-            url(r'^media/', media, name='media'),
+            url(r'^static/', media, name='static'),
         )
 
 # Add the default pages.
