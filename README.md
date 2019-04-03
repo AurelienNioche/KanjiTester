@@ -15,10 +15,15 @@ Prepare mysql
 
     mysql -u root -p
     
-    CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';
-    GRANT ALL PRIVILEGES ON *.* TO 'username'@'localhost';
-    CREATE DATABASE dbname;
-
+    CREATE DATABASE KanjiTester;
+    
+    CREATE USER 'admin'@'localhost' IDENTIFIED BY 'password';
+    GRANT ALL PRIVILEGES ON *.* TO 'admin'@'localhost';
+    
+    FLUSH PRIVILEGES;
+    
+    exit
+    
    
 Compile Cython module:
 
