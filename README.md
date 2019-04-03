@@ -19,7 +19,7 @@ Prepare mysql
     
     CREATE USER 'admin'@'localhost' IDENTIFIED BY 'password';
     GRANT ALL PRIVILEGES ON *.* TO 'admin'@'localhost';
-    
+    ALTER USER 'admin'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
     FLUSH PRIVILEGES;
     
     exit
