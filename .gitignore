@@ -105,3 +105,12 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+.idea/
+checksum/migrations/0001_initial.py
+checksum/migrations/0002_auto_20190404_1542.py
+# checksum/migrations/__init__.py
+drill/migrations/0001_initial.py
+plugins/reading_alt/migrations/0001_initial.py
+# plugins/reading_alt/migrations/__init__.py
+user_profile/migrations/0002_auto_20190404_1152.py
+user_profile/migrations/0003_auto_20190404_1153.py

@@ -139,7 +139,7 @@ def _store_lexemes(lexeme_nodes):
 
     log.log('Storing to lexicon_lexeme')
     for lexeme_rows in groups_of_n_iter(max_rows, xrange(1, next_lexeme_id)):
-        print(lexeme_rows)
+        # print(lexeme_rows)
         cursor.executemany('INSERT INTO lexicon_lexeme (id) VALUES (%s)', [(i, ) for i in lexeme_rows])
 
     log.log('Storing to lexicon_lexemesurface')
