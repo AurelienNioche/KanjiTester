@@ -28,5 +28,6 @@ Prepare mysql
     
    
 Compile Cython module:
-
-    cythonize -a -i yourmod.pyx
+       
+    cd kanji_tester/plugins/visual_similarity/metrics
+    cythonize -a -i stroke.pyx

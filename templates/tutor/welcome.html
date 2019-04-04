@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Welcome to {{project_name}}{% endblock %}
+
+{% block content %}
+  <h2>Welcome</h2>
+  
+  <h3>What is {{project_name}}?</h3>
+  <p>A research project which generates randomized vocab and kanji tests for
+  JLPT levels 3 and 4. It generates tests full of random questions like the
+  one below.</p>
+
+  <div style="margin-left:40px">
+    <img src="{% static 'img/hitori.png' %}">
+  </div>
+
+  <p>A human teacher would create questions with misleading options
+  ("distractors") to try to make your test more difficult. We use some
+  intelligent linguistic models to do the same. We're not quite as good as
+  a human teacher, but since every test we make is different, we have some
+  advantages over hand-made tests.</p>
+
+  <h3>What's it for?</h3>
+  <p>Most people use {{project_name}} in one of two ways:</p>
+  <ul class="text">
+    <li>To drill themselves, as a form of vocab study.</li>
+    <li>To test themselves regularly after other forms of study, to measure
+    their progress.</li>
+  </ul>
+
+  <h3>How do I get started?</h3>
+  <p><a href="{% url 'django_registration_register' %}">Register</a>, then
+  <a href="{% url 'login' %}">log-in</a>.</p>
+  <p>Or, you can read more <a href="{% url 'tutor_about' %}">about it</a>.</p>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Revision{% endblock %}
+
+{% block extra_head %}
+<style type="text/css">
+  @font-face {
+    font-family: Epson-Kyokasho;
+    src: local('Epson-Kyokasho'), url("{%  static 'fonts/Epson-Kyokasho.otf'%}");
+  }
+  span[lang='ja'] {
+    font-family: "Epson-Kyokasho", "mincho", serif;
+    font-size: 150%;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+  <h2>Revision</h2>
+  {% if not partial_kanji  and not partial_lexemes %}
+  <p>
+    Well done! You got everything correct in your last test, so there's nothing
+    to study. Consider taking a longer test to find items you might not know.
+  </p>
+  {% else %}
+  <p>In your previous test, you made mistakes on the following kanji and
+     words. Try to write down an example sentence using each item.</p>
+  {% endif %}
+  {% if partial_kanji %}
+    <h3>Kanji to study</h3>
+    <table>
+      <thead>
+        <tr>
+          <th width="20%">Kanji</th>
+          <th width="30%">Readings</th>
+          <th width="50%">Glosses</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for kanji in partial_kanji %}
+        <tr>
+          <td>{{kanji.kanji}}</td>
+          <td>
+            {% for kanji_reading in kanji.reading_set.all %}
+              {{kanji_reading.reading}}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+          </td>
+          <td>{{kanji.kanji.gloss}}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+  
+  {% if partial_lexemes %}
+    <h3>Words to study</h3>
+    <table>
+      <thead>
+        <tr>
+          <th width="20%">Word</th>
+          <th width="30%">Readings</th>
+          <th width="50%">Glosses</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for partial_lexeme in partial_lexemes %}
+        <tr>
+          <td>
+            {% if partial_lexeme.surface_set.all %}
+              {% for lexeme_surface in partial_lexeme.surface_set.all %}
+                {{lexeme_surface.surface}}{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            {% else %}
+              {% for lexeme_reading in partial_lexeme.reading_set.all %}
+                {{lexeme_reading.reading}}{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            {% endif %}
+          </td>
+          <td>
+            {% if partial_lexeme.surface_set.count %}
+              {% for lexeme_reading in partial_lexeme.reading_set.all %}
+                {{lexeme_reading.reading}}{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            {% else %}
+              &nbsp;
+            {% endif %}
+          </td>
+          <td>
+            {% for lexeme_sense in partial_lexeme.lexeme.sense_set.all %}
+              {{lexeme_sense.gloss}}{% if forloop.first %}<span class="quiet">{% endif %}{% if not forloop.last %}, {% else %}</span>{% endif %}
+            {% endfor %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+  <form action="{% url 'tutor_dashboard' %}" method="GET">
+  <p><input type="submit" value="Back to dashboard"></p>
+  </form>
+{% endblock %}

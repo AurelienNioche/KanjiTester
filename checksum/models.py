@@ -18,6 +18,7 @@ import datetime
 
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
 
 
 class Checksum(models.Model):
@@ -33,7 +34,7 @@ class Checksum(models.Model):
     """
     tag = models.CharField(max_length=50)
     value = models.CharField(max_length=15)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(default=timezone.now)
 
     def __unicode__(self):
         return u'%s' % self.tag
@@ -43,14 +44,13 @@ class Checksum(models.Model):
         result = 0
         for module_or_filename in files:
             # Replace module references with the file which defines them.
-            if type(module_or_filename) == types.ModuleType:
+            if isinstance(module_or_filename, types.ModuleType):
                 filename = module_or_filename.__file__
             else:
                 filename = module_or_filename
 
             # Replace compiled python files with their source code.
-            if (filename.endswith('.pyc') or filename.endswith('.pyo')) \
-                        and path.exists(filename[:-1]):
+            if (filename.endswith('.pyc') or filename.endswith('.pyo')) and path.exists(filename[:-1]):
                 filename = filename[:-1]
 
             i_stream = open(filename, 'r')
@@ -78,7 +78,7 @@ class Checksum(models.Model):
             latest_dep = max(Checksum.get_timestamp(t) for t in dep_tags)
         else:
             # Default to some time long in the past (1 year ago).
-            latest_dep = datetime.datetime.now() - datetime.timedelta(365)
+            latest_dep = timezone.now() - datetime.timedelta(365)
 
         result = Checksum.checksum(files)
         try:
@@ -99,11 +99,11 @@ class Checksum(models.Model):
         try:
             return Checksum.objects.get(tag=tag).timestamp
         except ObjectDoesNotExist:
-            return datetime.datetime.now()
+            return datetime.datetime.utcnow()
 
     @staticmethod
     def store(tag, files):
-        "Store the given checksum."
+        """Store the given checksum."""
         Checksum.objects.filter(tag=tag).delete()
         obj = Checksum(tag=tag, value=Checksum.checksum(files))
         obj.save()

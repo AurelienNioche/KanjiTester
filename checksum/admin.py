@@ -15,8 +15,10 @@ from django.contrib import admin
 
 import models
 
+
 class ChecksumAdmin(admin.ModelAdmin):
     list_display = ('tag', 'value')
+
 
 admin.site.register(models.Checksum, ChecksumAdmin)
 
