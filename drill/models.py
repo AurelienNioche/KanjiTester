@@ -315,9 +315,9 @@ class TestSet(models.Model):
                 i = random.randrange(len(available_plugins))
                 chosen_plugin = available_plugins[i]
                 try:
-                    print(chosen_plugin)
-                    print(item)
-                    print(user)
+                    # print(chosen_plugin)
+                    # print(item)
+                    # print(user)
                     question = chosen_plugin.get_question(item, user)
                     questions.append(question)
                 except UnsupportedItem:
