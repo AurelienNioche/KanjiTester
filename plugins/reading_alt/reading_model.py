@@ -7,7 +7,7 @@
 #  Copyright 2007-2008 Lars Yencken. All rights reserved.
 # 
 
-"A reading model for FOKS search."
+"""A reading model for FOKS search."""
 
 from os.path import join
 import math
@@ -20,10 +20,12 @@ from util.probability import ConditionalFreqDist
 import raw_reading_model
 
 
-_reading_counts_file = join(settings.DATA_DIR, 'corpus',
-        'kanji_readings__edict')
-_reading_counts_map_file = join(settings.DATA_DIR, 'corpus',
-        'kanji_readings__edict.map')
+_reading_counts_file = join(
+    settings.DATA_DIR, 'corpus',
+    'kanji_readings__edict')
+_reading_counts_map_file = join(
+    settings.DATA_DIR, 'corpus',
+    'kanji_readings__edict.map')
 
 
 if not (0 <= settings.ALTERNATION_ALPHA <= 1):
@@ -138,8 +140,6 @@ class VoicingAndGeminationModel(object):
 
         return valid_readings
 
-    #------------------------------------------------------------------------#
-
     def _load_alternation_dist(self, filename):
         """
         Loads an alternation distribution and returns it. This
@@ -194,7 +194,7 @@ class VoicingAndGeminationModel(object):
                 if key in from_canonical_reading:
                     from_canonical_reading[key].add(alt_reading)
                 else:
-                    from_canonical_reading[key] = set([alt_reading])
+                    from_canonical_reading[key] = {alt_reading}
 
         i_stream.close()
 

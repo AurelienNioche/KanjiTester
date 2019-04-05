@@ -96,14 +96,12 @@ class Syllabus(models.Model):
     @classmethod
     def validate(cls):
         for syllabus in cls.objects.all():
-            kanji_set = set(k.kanji for k in \
-                    lexicon_models.Kanji.objects.filter(
-                            partialkanji__syllabus=syllabus)
-                )
+            kanji_set = \
+                set(k.kanji for k in
+                    lexicon_models.Kanji.objects.filter(partialkanji__syllabus=syllabus))
             for partial_lexeme in syllabus.partiallexeme_set.all():
                 for lexeme_surface in partial_lexeme.surface_set.all():
-                    if not scripts.unique_kanji(lexeme_surface.surface
-                            ).issubset(kanji_set):
+                    if not scripts.unique_kanji(lexeme_surface.surface).issubset(kanji_set):
                         raise Exception('invalid surface')
 
 
@@ -133,8 +131,9 @@ class Alignment(models.Model):
 class PartialLexeme(models.Model):
     """A subset of an individual lexeme."""
     syllabus = models.ForeignKey(Syllabus)
-    lexeme = models.ForeignKey(lexicon_models.Lexeme,
-            help_text="The word under consideration.")
+    lexeme = models.ForeignKey(
+        lexicon_models.Lexeme,
+        help_text="The word under consideration.")
     reading_set = models.ManyToManyField(lexicon_models.LexemeReading)
     sense_set = models.ManyToManyField(lexicon_models.LexemeSense)
     surface_set = models.ManyToManyField(lexicon_models.LexemeSurface)
@@ -270,8 +269,7 @@ class ErrorDist(models.Model):
     def differs_from_priors(self):
         priors = self.prior_dist
         diff_map = {}
-        for condition in set(o['condition'] for o in 
-                self.density.all().values('condition')):
+        for condition in set(o['condition'] for o in self.density.all().values('condition')):
             error_hash = self._error_hash(self.density.filter(
                     condition=condition))
             prior_hash = self._error_hash(priors.density.filter(
@@ -311,7 +309,8 @@ class ErrorDist(models.Model):
     def sample(self, condition):
         "Samples a single symbol using the underlying distribution."
         target_cdf = random.random()
-        return self.density.filter(condition=condition,
+        return self.density.filter(
+            condition=condition,
             cdf__gte=target_cdf).order_by('cdf')[0].symbol
 
     def sample_n(self, condition, n, exclude_set=None):
@@ -417,7 +416,8 @@ class ErrorPdf(util_models.CondProb):
     def rescore_cdf(cls, dist, condition):
         """Rescores the cdf values after the pdf values have changed."""
         cdf = 0.0
-        for density in cls.objects.filter(dist=dist,
+        for density in cls.objects.filter(
+                dist=dist,
                 condition=condition).order_by('symbol'):
             cdf += density.pdf
             density.cdf = cdf

@@ -273,8 +273,9 @@ class ReadingDatabase(object):
 
 class AltTreeNode(TreeNode):
     def __init__(self, name, code, probability=0.0):
-        TreeNode.__init__(self, label=name,
-                attrib={'code': code, 'probability': probability})
+        TreeNode.__init__(
+            self, label=name,
+            attrib={'code': code, 'probability': probability})
         return
 
     def make_property(name):

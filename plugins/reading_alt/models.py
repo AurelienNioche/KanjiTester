@@ -69,8 +69,7 @@ class KanjiReading(CondProb):
         null=True, help_text='The final alternation step which provided this reading.')
 
     def __unicode__(self):
-        return u'%s /%s/ (%s)' % (self.condition, self.symbol,
-                self.alternations)
+        return u'%s /%s/ (%s)' % (self.condition, self.symbol, self.alternations)
 
     def get_alternation_path(self):
         """

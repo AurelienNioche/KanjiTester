@@ -31,3 +31,8 @@ Compile Cython module:
        
     cd kanji_tester/plugins/visual_similarity/metrics
     cythonize -a -i stroke.pyx
+
+
+### Other info
+
+Location of mysql for homebrew mysql: /usr/local/var/mysql/

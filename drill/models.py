@@ -309,8 +309,7 @@ class TestSet(models.Model):
         questions = []
         for item in items:
             has_kanji = item.has_kanji()
-            available_plugins = [p for p in question_plugins if \
-                    p.requires_kanji == has_kanji]
+            available_plugins = [p for p in question_plugins if p.requires_kanji == has_kanji]
             question = None
             while question is None and available_plugins:
                 i = random.randrange(len(available_plugins))

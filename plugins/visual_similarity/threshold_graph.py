@@ -12,10 +12,11 @@ An auto-pruning weighted graph which only keeps the n highest weight links
 from each node to each other.
 """
 
-import math
+# import math
 import heapq
 
-from django.db import connection
+# from django.db import connection
+
 
 class ThresholdLinkset(object):
     """
@@ -23,6 +24,7 @@ class ThresholdLinkset(object):
     only the lowest weight links are kept.
     """
     __slots__ = '_max_degree', '_heap'
+
     def __init__(self, max_degree):
         self._max_degree = max_degree
         self._heap = []
@@ -38,6 +40,7 @@ class ThresholdLinkset(object):
     def __iter__(self):
         for neg_weight, label in self._heap:
             yield -neg_weight, label
+
 
 class ThresholdGraph(object):
     """

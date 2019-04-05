@@ -1,18 +1,10 @@
 # -*- coding: utf-8 -*-
-#----------------------------------------------------------------------------#
-# testStroke.py
-# Lars Yencken <lars.yencken@gmail.com>
-# vim: ts=4 sw=4 sts=4 et tw=78:
-# Fri Feb 29 12:44:51 2008
-#
-#----------------------------------------------------------------------------# 
 
 import unittest
 from cjktools.resources import kanjidic
 
 import stroke
 
-#----------------------------------------------------------------------------#
 
 def suite():
     testSuite = unittest.TestSuite((
@@ -20,7 +12,6 @@ def suite():
         ))
     return testSuite
 
-#----------------------------------------------------------------------------#
 
 class StrokeTestCase(unittest.TestCase):
     def setUp(self):
@@ -61,12 +52,6 @@ class StrokeTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-#----------------------------------------------------------------------------#
 
 if __name__ == "__main__":
     unittest.TextTestRunner(verbosity=1).run(suite())
-
-#----------------------------------------------------------------------------#
-
-# vim: ts=4 sw=4 sts=4 et tw=78:
-

@@ -9,11 +9,9 @@
 
 """An abstract tree datatype."""
 
-#----------------------------------------------------------------------------#
 
 from random import shuffle
 
-#----------------------------------------------------------------------------#
 
 class TreeNode(object):
     """
@@ -266,10 +264,9 @@ class TreeNode(object):
         self._layout_children(self, '', method)
         return
 
-
-    #------------------------------------------------------------------------#
+    # ------------------------------------------------------------------------ #
     # PRIVATE
-    #------------------------------------------------------------------------#
+    # ------------------------------------------------------------------------ #
 
     def _layout_children(self, node, prefix, method):
         children = node.children.values()
@@ -286,16 +283,15 @@ class TreeNode(object):
 
         return
 
-#----------------------------------------------------------------------------#
 
 class TreeDist(object):
     """
     A tree probability distribution, initialized by passing in a constructed
     tree which needs annotation.
     """
-    #------------------------------------------------------------------------#
+    # ------------------------------------------------------------------------ #
     # PUBLIC
-    #------------------------------------------------------------------------#
+    # ------------------------------------------------------------------------ #
 
     def __init__(self, root, countMethod=len):
         """
@@ -320,21 +316,15 @@ class TreeDist(object):
 
         return
 
-    #------------------------------------------------------------------------#
-
     def copy(self):
         """Returns a shallow copy of the tree."""
         return TreeDist(self.root.copy(), countMethod=None)
-
-    #------------------------------------------------------------------------#
 
     def layout(self):
         """Prints a graphical representation of the tree to stdout."""
         return self.root.layout(
                 method=lambda n: '%s %.04f' % (n.label, n['freq'])
             )
-
-    #------------------------------------------------------------------------#
 
     def combine(self, rhs, f=lambda x, y: (x + y)/2.0, label='union'):
         """Returns a tree which is topologically the union of the two trees."""
@@ -381,5 +371,3 @@ class TreeDist(object):
 
     def diff(self, rhs):
         return self.union(rhs, f=lambda x, y: x - y, label='diff')
-
-#----------------------------------------------------------------------------#

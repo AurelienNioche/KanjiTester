@@ -39,6 +39,7 @@ def clean_all():
     
     _log.finish()
 
+
 def clean_user_data(email=None, username=None): 
     _log.start('Cleaning user responses')
     _log.start('Checking database')
@@ -69,7 +70,8 @@ def clean_user_data(email=None, username=None):
 
         _log.finish()
     _log.finish()
-    
+
+
 language_map = {
     'En':           'English',
     'Eng':          'English',
@@ -86,6 +88,7 @@ language_map = {
     'None':         '',
     'A':            '',
 }
+
 
 def clean_languages():
     _log.start('Cleaning languages')
@@ -123,6 +126,7 @@ def clean_languages():
 
     _log.finish('Cleaned %d profiles' % n_cleaned)
 
+
 def clean_manual():
     _log.start('Manual cleaning steps')
     
@@ -144,35 +148,42 @@ def clean_manual():
     
     _log.finish()
 
-#----------------------------------------------------------------------------#
+# ---------------------------------------------------------------------------- #
+
 
 def _create_option_parser():
     usage = \
-"""%prog [options] email_address
-
-Cleans the database by removing data for all users with the given email
-address."""
+        """%prog [options] email_address
+        
+        Cleans the database by removing data for all users with the given email
+        address."""
 
     parser = optparse.OptionParser(usage)
 
-    parser.add_option('-a', '--all', action='store_true', dest='clean_all',
-            help='Perform all default cleaning steps')
+    parser.add_option(
+        '-a', '--all', action='store_true', dest='clean_all',
+        help='Perform all default cleaning steps')
     
-    parser.add_option('-e', action='store', dest='email',
-            help='Clean user by email address')
+    parser.add_option(
+        '-e', action='store', dest='email',
+        help='Clean user by email address')
 
-    parser.add_option('-u', action='store', dest='username',
-            help='Clean user by username')
+    parser.add_option(
+        '-u', action='store', dest='username',
+        help='Clean user by username')
 
-    parser.add_option('-l', '--lang', action='store_true',
-            dest='clean_languages',
-            help='Clean reported languages')
+    parser.add_option(
+        '-l', '--lang', action='store_true',
+        dest='clean_languages',
+        help='Clean reported languages')
 
-    parser.add_option('-m', '--manual', action='store_true',
-            dest='clean_manual',
-            help='Perform additional manual cleaning steps.')
+    parser.add_option(
+        '-m', '--manual', action='store_true',
+        dest='clean_manual',
+        help='Perform additional manual cleaning steps.')
 
     return parser
+
 
 def main(argv):
     parser = _create_option_parser()
@@ -201,9 +212,6 @@ def main(argv):
     
     return
 
-#----------------------------------------------------------------------------#
 
 if __name__ == '__main__':
     main(sys.argv[1:])
-
-# vim: ts=4 sw=4 sts=4 et tw=78:

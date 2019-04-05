@@ -111,7 +111,6 @@ def _build_sets(study_list):
         else:
             pivot_set.add(pivot)
 
-
     print '%d kanji' % len(kanji)
     print '%d words' % len(words)
 

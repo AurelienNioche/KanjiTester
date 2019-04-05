@@ -11,4 +11,4 @@ import stroke
 
 metric_library = {
         'stroke edit distance':     stroke.StrokeEditDistance(),
-    }
+}

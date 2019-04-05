@@ -8,10 +8,8 @@
 #  Copyright 2009 Lars Yencken. All rights reserved.
 #
 
-"""
-"""
-
-import sys, optparse
+import sys
+import optparse
 
 import consoleLog
 from cjktools import scripts
@@ -20,6 +18,7 @@ from user_model import models
 
 _log = consoleLog.default
 
+
 def check_alignments():
     for syllabus in models.Syllabus.objects.all():
         _log.start('Checking %s' % syllabus.tag)
@@ -27,7 +26,6 @@ def check_alignments():
         _log.finish()
     return
 
-#----------------------------------------------------------------------------#
 
 def _check_syllabus(syllabus):
     """Checks for alignment errors in the syllabus."""
@@ -56,11 +54,12 @@ def _check_syllabus(syllabus):
             _log.log(u'No match for %s /%s/' % (g_seg, p_seg))
         _log.finish()
 
+
 def _create_option_parser():
     usage = \
-"""%prog [options]
-
-Checks the alignments for all syllabi."""
+        """%prog [options]
+        
+        Checks the alignments for all syllabi."""
 
     parser = optparse.OptionParser(usage)
 
@@ -68,6 +67,7 @@ Checks the alignments for all syllabi."""
             default=False, help='Enables debugging mode [False]')
 
     return parser
+
 
 def main(argv):
     parser = _create_option_parser()
@@ -88,9 +88,6 @@ def main(argv):
     check_alignments()
     return
 
-#----------------------------------------------------------------------------#
 
 if __name__ == '__main__':
     main(sys.argv[1:])
-
-# vim: ts=4 sw=4 sts=4 et tw=78:

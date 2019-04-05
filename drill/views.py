@@ -33,11 +33,12 @@ class QuestionField(forms.ChoiceField):
                 label=question.stimulus,
             )
 
+
 # XXX could be cleaned up a bit, perhaps using suggestions from:
 # http://jacobian.org/writing/dynamic-form-generation/
 class TestSetForm(forms.Form):
     def __init__(self, test_set, *args, **kwargs):
-        "Builds a test-set-specific form."
+        """Builds a test-set-specific form."""
         super(TestSetForm, self).__init__(*args, **kwargs)
         self.test_set = test_set
         self.label_suffix = None
@@ -203,10 +204,12 @@ class TestSetForm(forms.Form):
                         })
 
         if had_unanswered_questions:
-            output.insert(0, error_row % u"You forgot to answer one or more questions. Please answer them before continuing.")
+            output.insert(0, error_row %
+                          u"You forgot to answer one or more questions. "
+                          u"Please answer them before continuing.")
         if top_errors:
             output.insert(0, error_row % force_unicode(top_errors))
-        if hidden_fields: # Insert any hidden fields in the last row.
+        if hidden_fields:  # Insert any hidden fields in the last row.
             str_hidden = u''.join(hidden_fields)
             if output:
                 last_row = output[-1]

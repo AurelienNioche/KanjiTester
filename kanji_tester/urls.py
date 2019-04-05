@@ -16,7 +16,7 @@ from kanji_tester.views import media
 
 admin.autodiscover()
 
-urlpatterns = (#'',
+urlpatterns = (
         url(r'^admin/', include(admin.site.urls)),
         url(r'^accounts/', include('django_registration.backends.activation.urls')),
         url(r'^accounts/', include('django.contrib.auth.urls')),

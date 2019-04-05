@@ -18,35 +18,43 @@ class PartialLexemeAdmin(admin.ModelAdmin):
     search_fields = ('lexeme__reading_set__reading',
             'lexeme__surface_set__surface')
 
+
 class AlignmentAdmin(admin.ModelAdmin):
     list_display = ('syllabus', 'surface', 'reading', 'alignment')
     list_filter = ('syllabus',)
     search_fields = ('reading__reading', 'surface__surface')
 
+
 class SenseNoteAdmin(admin.ModelAdmin):
     list_display = ('partial_lexeme', 'note')
+
 
 class PartialKanjiAdmin(admin.ModelAdmin):
     list_display = ('kanji', 'syllabus', 'n_readings')
     list_filter = ('syllabus',)
 
+
 class PriorDistAdmin(admin.ModelAdmin):
     list_display = ('syllabus', 'tag')
     list_filter = ('syllabus',)
+
 
 class PriorPdfAdmin(admin.ModelAdmin):
     list_display = ('dist', 'condition', 'symbol', 'pdf', 'cdf')
     list_filter = ('dist',)
     search_fields = ('condition',)
 
+
 class ErrorPdfAdmin(admin.ModelAdmin):
     list_display = ('dist', 'condition', 'symbol', 'pdf', 'cdf')
     search_fields = ('dist__user__username',)
+
 
 class ErrorDistAdmin(admin.ModelAdmin):
     list_display = ('user', 'tag')
     list_filter = ('tag',)
     search_fields = ('user__username',)
+
 
 admin.site.register(models.Alignment, AlignmentAdmin)
 admin.site.register(models.PartialLexeme, PartialLexemeAdmin)

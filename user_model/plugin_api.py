@@ -27,11 +27,11 @@ class UserModelPlugin(object):
     """
     
     def init_priors(self):
-        "Initialises the prior distributions that this plugin provides."
+        """Initialises the prior distributions that this plugin provides."""
         raise Exception('not implemented')
 
     def update(self, _response):
-        "Updates this error model from a user's response."
+        """Updates this error model from a user's response."""
         raise Exception('not implemented')
 
 
@@ -46,7 +46,7 @@ class SegmentedSeqPlugin(UserModelPlugin):
     domain of error distribution symbols, or outcomes.
     """
     def update(self, response):
-        "Update our error model from a user's response."
+        """Update our error model from a user's response."""
         error_dist = models.ErrorDist.objects.get(user=response.user,
                                                   tag=self.dist_name)
         question = response.question
@@ -87,7 +87,9 @@ class SegmentedSeqPlugin(UserModelPlugin):
                 sub_dist.save_to(error_dist.density, condition=base_seg)
         return
 
+
 _cached_plugins = None
+
 
 def load_plugins():
     """
@@ -111,8 +113,9 @@ def load_plugins():
 
     return _cached_plugins
 
+
 def load_priors(syllabus, force=False):
-    "Loads the prior distributions represented by each plugin."
+    """Loads the prior distributions represented by each plugin."""
     log = consoleLog.default
     log.start('Loading prior distributions', nSteps=2)
 

@@ -114,3 +114,8 @@ plugins/reading_alt/migrations/0001_initial.py
 # plugins/reading_alt/migrations/__init__.py
 user_profile/migrations/0002_auto_20190404_1152.py
 user_profile/migrations/0003_auto_20190404_1153.py
+
+
+lexicon/migrations/0001_initial.py
+user_model/migrations/0001_initial.py
+user_profile/migrations/0001_initial.py

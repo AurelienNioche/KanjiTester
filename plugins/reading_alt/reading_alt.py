@@ -48,15 +48,14 @@ class KanjiReadingModel(usermodel_api.SegmentedSeqPlugin):
         _log.finish()
 
     def _fetch_syllabus_kanji(self, syllabus):
-        kanji_set = set(row['kanji'] for row in \
+        kanji_set = set(row['kanji'] for row in
                         lexicon_models.Kanji.objects.filter(
                             partialkanji__syllabus=syllabus
-                        ).values('kanji')
-                        )
+                        ).values('kanji'))
         return kanji_set
 
     def _import_readings(self, prior_dist, kanji_set):
-        "Copies the reading database directly into an prior distribution."
+        """Copies the reading database directly into an prior distribution."""
         cursor = connection.cursor()
         quote_name = connection.ops.quote_name
         fields_a = ', '.join(map(quote_name, ['dist_id', 'condition',
@@ -130,7 +129,7 @@ class ReadingAlternationQuestions(drill_api.MultipleChoiceFactoryI):
     verbose_name = 'reading alternations'
 
     def get_word_question(self, partial_lexeme, user):
-        "See parent."
+        """See parent."""
         try:
             alignment = partial_lexeme.alignments.order_by('?')[0]
         except IndexError:

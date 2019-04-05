@@ -13,7 +13,7 @@ Plugin for visual similarity.
 
 import consoleLog
 from simplestats.comb import iunique_pairs
-# from cjktools.exceptions import DomainError
+from cjktools.errors import DomainError
 from django.core.exceptions import ObjectDoesNotExist
 
 from user_model import models as usermodel_models, plugin_api as user_model_api

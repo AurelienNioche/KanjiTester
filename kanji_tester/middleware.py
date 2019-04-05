@@ -39,6 +39,3 @@ class TagLanguageMiddleware(object):
         response.content = u''.join(parts).encode('utf8')
 
         return response
-
-# vim: ts=4 sw=4 sts=4 et tw=78:
-

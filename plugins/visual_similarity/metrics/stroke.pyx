@@ -11,8 +11,6 @@ Optimised Levenstein distance calculation between stroke signatures for two
 kanji.
 """
 
-#----------------------------------------------------------------------------#
-
 import os
 
 from cjktools.errors import DomainError
@@ -20,7 +18,6 @@ from cjktools.common import sopen
 
 from kanji_tester import settings
 
-#----------------------------------------------------------------------------#
 
 _strokes_file = os.path.join(settings.DATA_DIR, 'structure', 'strokes_ulrich')
 
@@ -77,7 +74,6 @@ cdef class StrokeEditDistance:
         result = edit_distance(s_py, t_py)
         return float(result) / max(len(s_py), len(t_py))
 
-#----------------------------------------------------------------------------#
 
 cdef edit_distance(s_py, t_py):
     cdef int m, n, i, j
@@ -128,5 +124,3 @@ cdef edit_distance(s_py, t_py):
                     table[i][j] = diag
 
     return table[s_len][t_len]
-
-#----------------------------------------------------------------------------#

@@ -20,11 +20,11 @@ def build_kanji_options(kanji, error_dist, exclude_set=None, adaptive=True):
     distractors = []
     while len(distractors) < settings.N_DISTRACTORS:
         if adaptive:
-            potentials = error_dist.sample_n(kanji, settings.N_DISTRACTORS,
-                    exclude_set)
+            potentials = error_dist.sample_n(
+                kanji, settings.N_DISTRACTORS, exclude_set)
         else:
-            potentials = error_dist.sample_n_uniform(kanji,
-                    settings.N_DISTRACTORS, exclude_set)
+            potentials = error_dist.sample_n_uniform(
+                kanji, settings.N_DISTRACTORS, exclude_set)
 
         for result in potentials:
             exclude_set.add(result)
@@ -45,11 +45,11 @@ def build_word_options(segments, error_dist, exclude_set=None, adaptive=True):
     annotation_map = {}
     while len(distractors) < settings.N_DISTRACTORS:
         if adaptive:
-            potentials = error_dist.sample_seq_n(segments,
-                    settings.N_DISTRACTORS, exclude_set=exclude_set)
+            potentials = error_dist.sample_seq_n(
+                segments, settings.N_DISTRACTORS, exclude_set=exclude_set)
         else:
-            potentials = error_dist.sample_seq_n_uniform(segments,
-                    settings.N_DISTRACTORS, exclude_set=exclude_set)
+            potentials = error_dist.sample_seq_n_uniform(
+                segments, settings.N_DISTRACTORS, exclude_set=exclude_set)
         for result in potentials:
             base_result = u''.join(result)
             if base_result not in exclude_set:
@@ -60,5 +60,3 @@ def build_word_options(segments, error_dist, exclude_set=None, adaptive=True):
                     break
 
     return distractors, annotation_map
-
-# vim: ts=4 sw=4 sts=4 et tw=78:

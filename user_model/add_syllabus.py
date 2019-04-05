@@ -104,12 +104,11 @@ def _find_in_lexicon(word, skipped_words, syllabus):
     Attempts to find a unique match for this word in our lexicon. If we find
     one, we return it. Otherwise we record it as skipped, and return None.
     """
-    matches = set(r.lexeme for r in \
-            lexicon_models.LexemeReading.objects.filter(reading=word.reading))
+    matches = set(r.lexeme for r in lexicon_models.LexemeReading.objects.filter(reading=word.reading))
     if word.surface:
-        matches = matches.intersection(s.lexeme for s in \
-                lexicon_models.LexemeSurface.objects.filter(
-                        surface=word.surface))
+        matches = matches.intersection(s.lexeme for s in
+                                       lexicon_models.LexemeSurface.objects.filter(
+                                        surface=word.surface))
 
     if len(matches) == 1:
         # A unique match!
@@ -287,7 +286,9 @@ def _get_kanji_readings(alignments):
 
             has_left_context = i > 0
             has_right_context = i < alignment_len - 1
-            extra_variants = alternations.canonicalSegmentForms(p_seg,
+            extra_variants = \
+                alternations.canonicalSegmentForms(
+                    p_seg,
                     leftContext=has_left_context,
                     rightContext=has_right_context)
             reading_set.update(extra_variants)
@@ -314,20 +315,25 @@ def _create_option_parser():
 
     parser = optparse.OptionParser(usage)
 
-    parser.add_option('--debug', action='store_true', dest='debug',
-            help='Enables debugging mode [False]')
+    parser.add_option(
+        '--debug', action='store_true', dest='debug',
+        help='Enables debugging mode [False]')
 
-    parser.add_option('-l', '--list', action='store_true', dest='list_syllabi',
-            help='List the available syllabi.')
+    parser.add_option(
+        '-l', '--list', action='store_true', dest='list_syllabi',
+        help='List the available syllabi.')
 
-    parser.add_option('-a', '--all', action='store_true', dest='all',
-            help='Install all available syllabi.')
+    parser.add_option(
+        '-a', '--all', action='store_true', dest='all',
+        help='Install all available syllabi.')
 
-    parser.add_option('-f', '--force', action='store_true', dest='force',
-            help='Overwrite any existing data.')
+    parser.add_option(
+        '-f', '--force', action='store_true', dest='force',
+        help='Overwrite any existing data.')
 
-    parser.add_option('-u', '--user', action='store', dest='user',
-            help='Manually initialise error distributions for a user.')
+    parser.add_option(
+        '-u', '--user', action='store', dest='user',
+        help='Manually initialise error distributions for a user.')
 
     return parser
 

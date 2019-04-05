@@ -7,7 +7,7 @@
 #  Copyright 2007-2008 Lars Yencken. All rights reserved.
 #
 
-"A raw reading model, without any normalization."
+"""A raw reading model, without any normalization."""
 
 from os.path import join
 

@@ -30,7 +30,6 @@ def create_profile(request):
     try:
         profile = request.user.profile  # request.user.get_profile()
     except ObjectDoesNotExist:
-        print("no profile exixts")
         profile = None
     
     if profile is not None:
@@ -62,7 +61,7 @@ def create_profile(request):
 def view_profile(request):
     """View an existing profile."""
     context = dict()
-    context['profile'] = request.user.profile  #request.user.get_profile()
+    context['profile'] = request.user.profile  # request.user.get_profile()
     context['syllabi'] = [s.tag for s in usermodel_models.Syllabus.objects.all()]
 
     if request.method == 'POST':

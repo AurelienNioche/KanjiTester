@@ -15,8 +15,9 @@ from django import http
 from django.template import RequestContext, loader
 from django.core.urlresolvers import reverse
 
+
 def staff_only(view_f):
-    "A decorator for limiting request to staff only."
+    """A decorator for limiting request to staff only."""
     def wrapper_f(request, **kwargs):
         if not request.user.is_authenticated():
             return http.HttpResponseRedirect(reverse('auth_login'))

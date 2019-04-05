@@ -23,7 +23,9 @@ from util.alignment import AlignedFile
 
 _syllabi_path = path.join(settings.DATA_DIR, 'syllabus')
 
+
 class BundleError(Exception): pass
+
 
 class SyllabusBundle(object):
     """
@@ -71,19 +73,21 @@ class SyllabusBundle(object):
 
     @classmethod
     def verify(cls, name):
-        "Checks that all the required files are available for this name."
+        """Checks that all the required files are available for this name."""
         return reduce(
                 operator.and_,
                 map(path.exists, cls.get_dependencies(name)),
             )
 
+
 def iter_bundles():
-    "Returns an iterator over bundles for all valid syllabi."
+    """Returns an iterator over bundles for all valid syllabi."""
     for name in list_names():
         yield SyllabusBundle(name)
 
+
 def list_names():
-    "Returns a list of the available and verified syllabi."
+    """Returns a list of the available and verified syllabi."""
     syllabi = []
     glob_pattern = path.join(_syllabi_path, '*.words')
     for word_filename in glob.glob(glob_pattern):
@@ -93,8 +97,9 @@ def list_names():
 
     return syllabi
 
+
 class CharFile(set):
-    "A wrapper for syllabus character lists. "
+    """A wrapper for syllabus character lists."""
     def __init__(self, filename):
         i_stream = sopen(filename)
         unique_kanji = scripts.unique_kanji
@@ -103,6 +108,7 @@ class CharFile(set):
                 continue
             self.update(unique_kanji(line))
         i_stream.close()
+
 
 class WordEntry(object):
     __slots__ = ('reading', 'surface', 'notes')
@@ -134,10 +140,13 @@ class WordEntry(object):
     def __eq__(self, rhs):
         return self._tuple() == rhs._tuple()
 
-class FormatError(Exception): pass
+
+class FormatError(Exception):
+    pass
+
 
 class WordFile(object):
-    "A wrapper for syllabus word files."
+    """A wrapper for syllabus word files."""
     def __init__(self, filename):
         self._words = []
         i_stream = sopen(filename)
@@ -156,5 +165,3 @@ class WordFile(object):
 
     def __len__(self):
         return len(self._words)
-
-# vim: ts=4 sw=4 sts=4 et tw=78:

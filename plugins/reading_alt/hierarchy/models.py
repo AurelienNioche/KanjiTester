@@ -12,9 +12,11 @@ Database models for the django_hierarchy project.
 """
 
 from django.db import models
+from django.db import connection
+
 
 class HierarchicalModel(models.Model):
-    "A generic hierarchical database model."
+    """A generic hierarchical database model."""
 
     left_visit = models.IntegerField(primary_key=True)
     right_visit = models.IntegerField(db_index=True)
@@ -65,8 +67,5 @@ class HierarchicalModel(models.Model):
         return cmp(self.left_visit, self.right_visit)
 
     def leaves(self):
-        "Returns all leaf nodes under this node."
+        """Returns all leaf nodes under this node."""
         return self.get_subtree().extra(where=['left_visit + 1 = right_visit'])
-
-# vim: ts=4 sw=4 sts=4 et tw=78:
-

@@ -28,12 +28,13 @@ from user_model.models import PartialLexeme, PartialKanji
 from drill import models as drill_models
 from util.probability import FreqDist, ConditionalFreqDist
 
-#----------------------------------------------------------------------------#
+# ---------------------------------------------------------------------------- #
 # DATA TRANSFORMS
-#----------------------------------------------------------------------------#
+# ---------------------------------------------------------------------------- #
+
 
 def log_histogram(data, normalize=True, threshold=0.01, start=1.0):
-    "Fetches a reverse cumulative histogram of time between tests."
+    """Fetches a reverse cumulative histogram of time between tests."""
     n_points = float(len(data))
 
     rows = []
@@ -50,8 +51,9 @@ def log_histogram(data, normalize=True, threshold=0.01, start=1.0):
                     
     return rows
 
+
 def histogram(data, n_bins=10, x_min=None, x_max=None, normalize=True):
-    "Generates a histogram of the data."
+    """Generates a histogram of the data."""
     if x_min is None:
         x_min = min(data)
     if x_max is None:
@@ -78,6 +80,7 @@ def histogram(data, n_bins=10, x_min=None, x_max=None, normalize=True):
     
     return results
 
+
 def _bin_sequence(x_min, x_max, n_bins):
     if x_min >= x_max:
         raise ValueError('need x_min < x_max')
@@ -92,6 +95,7 @@ def _bin_sequence(x_min, x_max, n_bins):
     
     for i in xrange(n_bins):
         yield bin_boundaries[i], bin_boundaries[i + 1]
+
 
 def approximate(data, n_points=10, x_min=None, x_max=None):
     """
@@ -124,6 +128,7 @@ def approximate(data, n_points=10, x_min=None, x_max=None):
         ))
     return results
 
+
 def group_by_points(data, y_max=sys.maxint, y_min=None):
     """
     Similar to approximate(), but more useful when the x axis is discrete.
@@ -148,9 +153,10 @@ def group_by_points(data, y_max=sys.maxint, y_min=None):
             
     return new_data
 
-#----------------------------------------------------------------------------#
+# ---------------------------------------------------------------------------- #
 # ANALYSES
-#----------------------------------------------------------------------------#
+# ---------------------------------------------------------------------------- #
+
 
 def get_mean_score_nth_test():
     """
@@ -183,6 +189,7 @@ def get_mean_score_nth_test():
     data.sort()
     return data
 
+
 def get_time_between_tests():
     test_sets = drill_models.TestSet.objects.exclude(end_time=None).order_by(
             'user__id')
@@ -196,13 +203,15 @@ def get_time_between_tests():
         last_test = user_tests.next().start_time
         
         for test_set in user_tests:
-            time_diff = _scale_time_delta(test_set.start_time - last_test,
-                    in_days)
+            time_diff = _scale_time_delta(
+                test_set.start_time - last_test,
+                in_days)
             data.append(time_diff)
             last_test = test_set.start_time
     
     data.sort()
     return data
+
 
 def get_mean_score_over_sessions(max_delta=timedelta(days=1)):
     """
@@ -214,8 +223,9 @@ def get_mean_score_over_sessions(max_delta=timedelta(days=1)):
     test_sets = drill_models.TestSet.objects.exclude(end_time=None).order_by(
             'user__id', 'start_time')
     
-    assert list(test_sets) == sorted(test_sets, 
-            key=lambda t: (t.user_id, t.start_time))
+    assert list(test_sets) == sorted(
+        test_sets,
+        key=lambda t: (t.user_id, t.start_time))
 
     ignore_users = _get_user_ignore_set()
 
@@ -240,7 +250,8 @@ def get_mean_score_over_sessions(max_delta=timedelta(days=1)):
                     ))
     data.sort()
     return data
-    
+
+
 def get_score_over_norm_time():
     "Fetches the score for each user normalized over the time axis."
     scores_by_test = dict((t, float(s)) for (t, s) in _get_test_scores())
@@ -266,10 +277,10 @@ def get_score_over_norm_time():
             test_time = _scale_time_delta(test_set.start_time - first_test,
                     max_delta)
             data.append((test_time, scores_by_test[test_set.id]))
-    
-    
+
     data.sort()
     return data
+
 
 def get_score_over_time():
     """
@@ -322,6 +333,7 @@ def get_score_over_time():
     base_data.sort()
     return base_data
 
+
 def get_users_by_n_tests():
     """
     Fetch the number of users who have taken at least n tests, for varying n.
@@ -353,6 +365,7 @@ def get_users_by_n_tests():
         data[i-1] = (label, value + data[i][1])
 
     return data
+
 
 def get_mean_score_by_n_tests():
     """
@@ -387,6 +400,7 @@ def get_mean_score_by_n_tests():
         ))
     return data
 
+
 def get_users_by_n_responses():
     """
     Fetch the number of users who have at least n responses, for varying n.
@@ -411,6 +425,7 @@ def get_users_by_n_responses():
 
     return data
 
+
 def get_test_length_volume():
     """
     Fetch the number of tests taken of each available test length.
@@ -427,15 +442,17 @@ def get_test_length_volume():
     """)
     return cursor.fetchall()
 
+
 def get_syllabus_volume():
-    "Fetches the number of users per syllabus."
+    """Fetches the number of users per syllabus."""
     data = []
     for syllabus in Syllabus.objects.all():
         data.append((syllabus.tag, syllabus.userprofile_set.count()))
     return data
 
+
 def get_language_data(name):
-    "Fetches information about user first and second languages."
+    """Fetches information about user first and second languages."""
 
     fields_needed = ['user_id']
     if name in ['first', 'combined']:
@@ -468,6 +485,7 @@ def get_language_data(name):
 
     return dist
 
+
 def get_user_scores(syllabus_tag):
     """
     Returns the overall user scores for each user on this syllabus.
@@ -484,6 +502,7 @@ def get_user_scores(syllabus_tag):
         n_responses = user_responses.count()
         data.append(n_correct / float(n_responses))
     return data
+
 
 def get_test_size_stats():
     """
@@ -516,8 +535,9 @@ def get_test_size_stats():
         results.append((sample, dist.freq(sample), completion_rates[sample]))
     return results
 
+
 def count_active_users():
-    "Fetch the number of users who have finished at least one test."
+    """Fetch the number of users who have finished at least one test."""
     cursor = connection.cursor()
     cursor.execute("""
         SELECT COUNT(*) FROM (
@@ -527,6 +547,7 @@ def count_active_users():
             ) as tmp
     """)
     return cursor.fetchone()[0]
+
 
 def get_pivots_by_questions(n, syllabus_id, pivot_type):
     """
@@ -560,6 +581,7 @@ def get_pivots_by_questions(n, syllabus_id, pivot_type):
 
     return [(pivot_map[pid], c, _get_n_errors(pid)) for \
             (pid, c) in base_results]
+
 
 def get_pivots_by_errors(n, syllabus_id, pivot_type):
     "Get the top n pivots by the number of errors made on them."
@@ -597,8 +619,9 @@ def get_pivots_by_errors(n, syllabus_id, pivot_type):
     return [(pivot_map[pivot_id], _get_n_responses(pivot_id), n_errors) for \
             (pivot_id, n_errors) in base_results]
 
+
 def get_mean_exposures_per_pivot():
-    "Returns the number of exposures each pivot received."
+    """Returns the number of exposures each pivot received."""
     cursor = connection.cursor()
     cursor.execute("""
         SELECT pivot, pivot_type, COUNT(*) as n_exposures
@@ -632,8 +655,9 @@ def get_mean_exposures_per_pivot():
             ('Kanji combined', mean(kanji_inc_dist.values())),
         ]
 
+
 def get_mean_time_used():
-    "Gets the mean time in days for which the system was used."
+    """Gets the mean time in days for which the system was used."""
     test_sets = drill_models.TestSet.objects.exclude(end_time=None).order_by(
             'user__id')
     
@@ -670,6 +694,7 @@ def get_mean_error_by_plugin():
         ORDER BY plugin.name ASC
     """)
     return [(l, float(v)) for (l, v) in cursor.fetchall()]
+
 
 def get_power_binned_error_by_plugin(n=5):
     assert n > 0 and type(n) == int
@@ -736,6 +761,7 @@ def get_power_binned_error_by_plugin(n=5):
     late.sort()
     return early, mid, late
 
+
 def get_accuracy_by_pivot_type():
     cursor = connection.cursor()
     cursor.execute("""
@@ -784,6 +810,7 @@ def get_accuracy_by_pivot_type():
 
     return data
 
+
 def get_rater_stats(rater):
     responses = drill_models.MultipleChoiceOption.objects.filter(
             multiplechoiceresponse__user=rater).values('is_correct')
@@ -796,6 +823,7 @@ def get_rater_stats(rater):
                 user=rater).count(),
         'mean_accuracy': mean_accuracy,
     }
+
 
 def get_pivot_response_stats(pivot_id, pivot_type):
     """
@@ -840,6 +868,7 @@ def get_pivot_response_stats(pivot_id, pivot_type):
     
     return results
 
+
 def get_global_rater_stats():
     cursor = connection.cursor()
     
@@ -874,15 +903,10 @@ def get_global_rater_stats():
             continue
         rows = [(p, pt, c) for (_u, p, pt, c) in rows] # discard user_id
         
-        user_data = {
-            'user_id':      user_id,
-            'username':     id_to_username[user_id]
-        }
-        user_data['n_responses'] = len(rows)
-        user_data['n_tests'] = drill_models.TestSet.objects.filter(
-                user__id=user_id).exclude(end_time=None).count()
-        user_data['mean_accuracy'] = mean(r[2] for r in rows)
-        user_data['n_errors'] = _seq_len(r for r in rows if r[2])
+        user_data = {'user_id': user_id, 'username': id_to_username[user_id], 'n_responses': len(rows),
+                     'n_tests': drill_models.TestSet.objects.filter(
+                         user__id=user_id).exclude(end_time=None).count(), 'mean_accuracy': mean(r[2] for r in rows),
+                     'n_errors': _seq_len(r for r in rows if r[2])}
 
         pre_ratio, post_ratio = _calculate_pre_post_ratios(rows)
         user_data['pre_ratio'] = pre_ratio
@@ -896,6 +920,7 @@ def get_global_rater_stats():
             user_data['pre_post_diff'] = None
         results.append(user_data)
     return results
+
 
 def get_dropout_figures():
     """Get the likelihood of dropout as a function of last score."""
@@ -917,6 +942,7 @@ def get_dropout_figures():
     
     data.sort()
     return data
+
 
 def get_first_last_test():
     scores_by_test = dict(_get_test_scores())
@@ -941,6 +967,7 @@ def get_first_last_test():
             )
     return data
 
+
 def get_state_machine():
     """Gets state transition probabilities for items."""
     user_stats = get_global_rater_stats()
@@ -949,13 +976,15 @@ def get_state_machine():
         state_transitions.add_counts(user_data['state_machine'])
     return state_transitions
 
-#----------------------------------------------------------------------------#
+# ---------------------------------------------------------------------------- #
 # HELPERS
-#----------------------------------------------------------------------------#
+# ---------------------------------------------------------------------------- #
+
 
 def _get_user_ignore_set():
     return set(p.user_id for p in 
             UserProfile.objects.filter(first_language__contains='Japanese'))
+
 
 def _iter_log_values(value):
     yield 0
@@ -963,6 +992,7 @@ def _iter_log_values(value):
     while True:
         value *= 2
         yield value
+
 
 def _split_into_sessions(user_tests, max_delta=timedelta(minutes=5)):
     """
@@ -980,6 +1010,7 @@ def _split_into_sessions(user_tests, max_delta=timedelta(minutes=5)):
 
         last_test_time = test_set.start_time
 
+
 def _seq_len(seq):
     """
     Returns the length of a sequence (by iterating over it).
@@ -988,9 +1019,10 @@ def _seq_len(seq):
     100
     """
     i = 0
-    for item in seq:
+    for _ in seq:
         i += 1
     return i
+
 
 def _get_n_errors(pivot_id):
     return drill_models.Response.objects.filter(
@@ -998,9 +1030,10 @@ def _get_n_errors(pivot_id):
                 multiplechoiceresponse__option__is_correct=False
             ).count()
 
+
 def _get_n_responses(pivot_id):
-    return drill_models.Response.objects.filter(question__pivot_id=pivot_id
-            ).count()
+    return drill_models.Response.objects.filter(question__pivot_id=pivot_id).count()
+
 
 def _get_syllabus_query(syllabus_id, pivot_type):
     """
@@ -1024,19 +1057,19 @@ def _get_syllabus_query(syllabus_id, pivot_type):
         }
     return query
 
+
 def _calculate_pre_post_ratios(response_data):
     """
     Returns the number of data which are correctly responded to on their first
     presentation.
     """
-    response_data = [(pid, pt, i, ic) for (i, (pid, pt, ic)) in 
-            enumerate(response_data)]
+    response_data = [(pid, pt, i, ic)
+                     for (i, (pid, pt, ic)) in enumerate(response_data)]
     response_data.sort()
     
     first_responses = []
     last_responses = []
-    for (pivot_id, pivot_type), responses in groupby(response_data,
-            lambda r: (r[0], r[1])):
+    for (pivot_id, pivot_type), responses in groupby(response_data, lambda r: (r[0], r[1])):
         responses = list(responses)
         if len(responses) < 2:
             continue
@@ -1051,6 +1084,7 @@ def _calculate_pre_post_ratios(response_data):
             mean(last_responses),
         )
 
+
 def _calculated_item_change(response_data):
     """
     Calculates how many items were forgotten and how many were learned.
@@ -1061,8 +1095,7 @@ def _calculated_item_change(response_data):
             enumerate(response_data)]
     response_data.sort()
 
-    for (pivot_id, pivot_type), responses in groupby(response_data,
-            lambda r: (r[0], r[1])):
+    for (pivot_id, pivot_type), responses in groupby(response_data, lambda r: (r[0], r[1])):
         responses = list(responses)
         if len(responses) < 2:
             continue
@@ -1073,6 +1106,7 @@ def _calculated_item_change(response_data):
             fs[from_state].inc(to_state)
 
     return fs
+
 
 def _get_test_scores():
     """
@@ -1098,7 +1132,10 @@ def _get_test_scores():
     """)
     return [(i, float(s)) for (i, s) in cursor.fetchall()]
 
+
 _zero_delta = timedelta()
+
+
 def _scale_time_delta(value, max_value):
     """
     Scales a timedelta object to between 0 and 1, according to max_value.
@@ -1117,6 +1154,7 @@ def _scale_time_delta(value, max_value):
     """
     return _time_delta_seconds(value) / float(_time_delta_seconds(max_value))
 
+
 def _time_delta_seconds(delta):
     """
     Reduces a timedelta object to its value in seconds.
@@ -1128,5 +1166,3 @@ def _time_delta_seconds(delta):
     176663
     """
     return delta.seconds + delta.days*24*60*60
-
-# vim: ts=4 sw=4 sts=4 et tw=78:

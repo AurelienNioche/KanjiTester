@@ -13,8 +13,8 @@ import numpy
 import itertools
 import json
 
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
+# from django.template import RequestContext
 from django.contrib.auth.models import User
 from django.http import HttpResponse, Http404
 
@@ -32,7 +32,7 @@ import stats
 
 @staff_only
 def basic(request):
-    "Calculates and displays some basic statistics."
+    """Calculates and displays some basic statistics."""
     context = {}
     
     # Number of users
@@ -71,13 +71,12 @@ def basic(request):
     context['time_used_mean'], context['time_used_std'] = \
             stats.get_mean_time_used()
 
-    return render_to_response("analysis/basic.html", context,
-            RequestContext(request))
+    return render(request, "analysis/basic.html", context)
 
 
 @staff_only
 def data(request, name=None, format=None):
-    "Fetches data set as either a chart or as a CSV file."
+    """Fetches data set as either a chart or as a CSV file."""
     chart = _build_graph(name)
     if name.count('_') > 2:
         raise Http404
@@ -99,10 +98,8 @@ def data(request, name=None, format=None):
 
 @staff_only
 def chart_dashboard(request, name=None):
-    context = {}
-    context['column_1'], context['column_2'], context['column_3'] = \
-            available_charts
-    
+    context = {'column_1': available_charts[0], 'column_2': available_charts[1], 'column_3': available_charts[2]}
+
     if name is not None:
         if name.count('_') > 2:
             raise Http404
@@ -113,8 +110,8 @@ def chart_dashboard(request, name=None):
         chart = _build_graph(name)
         context['chart'] = chart
 
-    return render_to_response("analysis/charts.html", context,
-            RequestContext(request))
+    return render(request, "analysis/charts.html", context)
+
 
 _default_num_raters = 10
 
@@ -129,8 +126,8 @@ def raters(request):
     n = 'n' in request.GET and int(request.GET['n']) or _default_num_raters
     context['n'] = n
     context['order_by'] = request.REQUEST.get('order_by', 'n_responses')
-    return render_to_response("analysis/raters.html", context,
-            RequestContext(request))
+    return render(request, "analysis/raters.html", context)
+
 
 _default_num_pivots = 10
 
@@ -155,8 +152,8 @@ def rater_detail(request, rater_id=None):
             float(word_chart.get_data()[0][-1])
     context['kanji_ratio'] = kanji_chart.get_data()[1][-1] / \
             float(kanji_chart.get_data()[0][-1])
-    return render_to_response('analysis/rater_detail.html', context,
-            RequestContext(request))
+    return render(request, 'analysis/rater_detail.html', context)
+
 
 @staff_only
 def rater_csv(request, rater_id=None, data_type=None):
@@ -179,8 +176,7 @@ def rater_csv(request, rater_id=None, data_type=None):
 def pivots(request):
     context = {}
     context['syllabi'] = usermodel_models.Syllabus.objects.all()
-    return render_to_response("analysis/pivots.html", context,
-            RequestContext(request))
+    return render(request, "analysis/pivots.html", context)
 
 
 @staff_only
@@ -210,8 +206,7 @@ def pivots_by_syllabus(request, syllabus_tag=None):
     context['partial_lexemes'] = method(n, syllabus.id, 'w')
     context['partial_kanjis'] = method(n, syllabus.id, 'k')
  
-    return render_to_response('analysis/pivots_by_syllabus.html', context,
-            RequestContext(request))
+    return render(request, 'analysis/pivots_by_syllabus.html', context)
 
 
 @staff_only
@@ -241,8 +236,7 @@ def pivot_detail(request, syllabus_tag=None, pivot_type=None, pivot_id=None):
             (l, charts.PieChart(d.items(), size='750x200'))
             for (l, d) in base_response_stats]
     
-    return render_to_response('analysis/pivot_detail.html', context,
-            RequestContext(request))
+    return render(request, 'analysis/pivot_detail.html', context)
 
 
 # ----------------------------------------------------------------------------
@@ -274,6 +268,7 @@ class _Column(object):
     def __init__(self, title, charts_v):
         self.title = title
         self.charts = charts_v
+
 
 available_charts = (
         _Column('User information', [
@@ -310,12 +305,11 @@ available_charts = (
         ])
     )
 
-name_to_desc = dict(reduce(operator.add, (c.charts for c in \
-        available_charts)))
+name_to_desc = dict(reduce(operator.add, (c.charts for c in available_charts)))
 
 
 def _build_graph(name):
-    "Builds a graph using the given name."
+    """Builds a graph using the given name."""
     first_part, rest = name.split('_', 1)
     try:
         method = globals()['_build_%s_graph' % first_part]

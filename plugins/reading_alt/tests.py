@@ -21,7 +21,7 @@ class QuestionTest(TestCase):
     fixtures = ['reading_alt']
 
     def setUp(self):
-        from plugins.reading_alt import ReadingAlternationQuestions
+        from plugins.reading_alt.reading_alt import ReadingAlternationQuestions
         self.factory = ReadingAlternationQuestions()
 
     def test_word_question(self):
