@@ -22,6 +22,7 @@ class UnsupportedItem(Exception):
 
 class QuestionFactoryI(object):
     """An abstract interface for factories which build questions."""
+
     @classmethod
     def get_question_plugin(cls):
         if hasattr(cls, '_question_plugin'):
@@ -59,7 +60,7 @@ class QuestionFactoryI(object):
 
     @classmethod
     def _update_existing(cls, obj):
-        "Updates all fields of this plugin object."
+        """Updates all fields of this plugin object."""
         dirty = False
         description = cls.get_description()
         if obj.description != description:

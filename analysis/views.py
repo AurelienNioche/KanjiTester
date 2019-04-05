@@ -14,14 +14,13 @@ import itertools
 import json
 
 from django.shortcuts import render
-# from django.template import RequestContext
 from django.contrib.auth.models import User
 from django.http import HttpResponse, Http404
 
 from django.conf import settings
 from simplestats import basic_stats, mean
 
-from kanji_tester.analysis.decorators import staff_only
+from analysis.decorators import staff_only
 from drill import models
 from util import charts
 from tutor import study_list
@@ -61,8 +60,8 @@ def basic(request):
     context['responses_per_test'] = num_responses / float(num_tests)
     
     all_responses = models.MultipleChoiceResponse.objects
-    context['mean_score'] = (all_responses.filter(option__is_correct=True
-            ).count() / float(all_responses.count()))
+    context['mean_score'] = \
+        (all_responses.filter(option__is_correct=True).count() / float(all_responses.count()))
 
     test_stats = stats.get_test_size_stats()
     pretty_results = [(k, 100*t, 100*c) for (k, t, c) in test_stats]
@@ -86,8 +85,7 @@ def data(request, name=None, format=None):
             mimetype = 'text/html'
         else:
             mimetype = 'application/json'
-        return HttpResponse(json.dumps(chart.get_url()),
-                mimetype=mimetype)
+        return HttpResponse(json.dumps(chart.get_url()), mimetype=mimetype)
 
     elif format == 'csv':
         return _chart_csv_response(chart, name)
@@ -121,11 +119,10 @@ def raters(request):
     """
     Displays the top n raters by one of several metrics.
     """
-    context = {}
-    context['raters'] = stats.get_global_rater_stats()
+    context = {'raters': stats.get_global_rater_stats()}
     n = 'n' in request.GET and int(request.GET['n']) or _default_num_raters
     context['n'] = n
-    context['order_by'] = request.REQUEST.get('order_by', 'n_responses')
+    context['order_by'] = request.GET.get('order_by', 'n_responses')
     return render(request, "analysis/raters.html", context)
 
 
@@ -157,7 +154,7 @@ def rater_detail(request, rater_id=None):
 
 @staff_only
 def rater_csv(request, rater_id=None, data_type=None):
-    "Provide an individual rater's performance data in CSV format."
+    """Provide an individual rater's performance data in CSV format."""
     rater_id = int(rater_id)
     if data_type not in ['kanji', 'word']:
         raise Http404
@@ -174,8 +171,7 @@ def rater_csv(request, rater_id=None, data_type=None):
 
 @staff_only
 def pivots(request):
-    context = {}
-    context['syllabi'] = usermodel_models.Syllabus.objects.all()
+    context = {'syllabi': usermodel_models.Syllabus.objects.all()}
     return render(request, "analysis/pivots.html", context)
 
 
@@ -218,10 +214,10 @@ def pivot_detail(request, syllabus_tag=None, pivot_type=None, pivot_id=None):
         raise Http404
     pivot_id = int(pivot_id)
     
-    context = {}
-    context['pivot_type'] = pivot_type
-    context['syllabus'] = usermodel_models.Syllabus.objects.get(
-            tag=syllabus_tag.replace('_', ' '))
+    context = {
+        'pivot_type': pivot_type,
+        'syllabus': usermodel_models.Syllabus.objects.get(tag=syllabus_tag.replace('_', ' '))
+    }
 
     if pivot_type == 'k':
         pivot = usermodel_models.PartialKanji.objects.get(id=pivot_id)
@@ -250,8 +246,7 @@ def _chart_csv_response(chart, name, data_set_name=None):
         data_set_name = name.split('_')[2]
     if not settings.DEBUG:
         response = HttpResponse(mimetype='text/csv')
-        response['Content-Disposition'] = \
-                'attachment; filename=%s.csv' % name
+        response['Content-Disposition'] = 'attachment; filename=%s.csv' % name
     else:
         response = HttpResponse(mimetype='text/html')
     writer = csv.writer(response)
@@ -337,7 +332,7 @@ def _build_user_graph(name):
         data = [r['pre_post_diff'] for r in stats.get_global_rater_stats()
                 if r['n_tests'] > 2 and r['pre_post_diff']]
         hist_data = stats.histogram(data, n_bins=11, normalize=False,
-                x_min=-0.7, x_max=0.7)
+                                    x_min=-0.7, x_max=0.7)
         chart = charts.LineChart(hist_data, data_name='histogram',
             x_axis=(-0.8, 0.8, 0.2))
         chart.add_data('raw', data)
@@ -354,8 +349,7 @@ def _build_user_graph(name):
     elif name == 'abilityjlpt4':
         data = stats.get_user_scores('jlpt 4')
         hist_data = stats.histogram(data, x_min=0.0, x_max=1.0, normalize=False)
-        chart = charts.LineChart(hist_data, data_name='histogram',
-                x_axis=(0.0, 1.0, 0.1))
+        chart = charts.LineChart(hist_data, data_name='histogram', x_axis=(0.0, 1.0, 0.1))
         chart.add_data('raw', data)
         return chart
         
@@ -372,7 +366,7 @@ def _build_syllabus_graph(name):
 def _build_time_graph(name):
     if name == 'betweentests':
         data = stats.get_time_between_tests()
-        hist_data = stats.log_histogram(data, start=1.0/(24*60))
+        hist_data = stats.log_histogram(data, start=1.0 / (24 * 60))
         chart = charts.LineChart(hist_data, data_name='histogram')
         chart.add_data('raw', [(x,) for x in data])
         return chart
@@ -380,12 +374,11 @@ def _build_time_graph(name):
     elif name == 'sessions':
         data = stats.get_mean_score_over_sessions()
         approx_data = stats.approximate(data, n_points=12)
-        chart = charts.MultiLineChart(approx_data, y_axis=(0.0, 1, 0.1),
-                x_axis=(0, 1, 0.1), data_name='approximate')
+        chart = charts.MultiLineChart(approx_data, y_axis=(0.0, 1, 0.1), x_axis=(0, 1, 0.1),
+                                      data_name='approximate')
         chart.add_data('raw', data)
         two_colours = charts.color_desc(2).split(',')
-        three_colours = ','.join((two_colours[0], two_colours[1],
-                two_colours[1]))
+        three_colours = ','.join((two_colours[0], two_colours[1], two_colours[1]))
         chart['chco'] = three_colours
         return chart
     
@@ -396,8 +389,7 @@ def _build_test_graph(name):
     if name == 'mean':
         score_data = stats.get_mean_score_nth_test()
         data = stats.group_by_points(score_data, y_max=1.0, y_min=0.0)
-        chart = charts.MultiLineChart(data, y_axis=(0, 1, 0.1),
-                data_name='grouped')
+        chart = charts.MultiLineChart(data, y_axis=(0, 1, 0.1), data_name='grouped')
         chart.add_data('raw', score_data)
         return chart
 
@@ -415,12 +407,10 @@ def _build_test_graph(name):
     elif name == 'time':
         base_data = stats.get_score_over_time()
         data = stats.approximate(base_data)
-        chart = charts.MultiLineChart(data, y_axis=(0, 1.05, 0.1), 
-                data_name='approximate')
+        chart = charts.MultiLineChart(data, y_axis=(0, 1.05, 0.1), data_name='approximate')
         chart.add_data('raw', base_data)
         two_colours = charts.color_desc(2).split(',')
-        three_colours = ','.join((two_colours[0], two_colours[1],
-                two_colours[1]))
+        three_colours = ','.join((two_colours[0], two_colours[1], two_colours[1]))
         chart['chco'] = three_colours
         return chart
     
@@ -429,10 +419,8 @@ def _build_test_graph(name):
 
     elif name == 'firstlast':
         data = stats.get_first_last_test()
-        hist_data = stats.histogram(data, n_bins=11, normalize=False,
-                x_min=-0.5, x_max=0.5)
-        chart = charts.LineChart(hist_data, data_name='histogram',
-                x_axis=(-0.5, 0.5, 0.1))
+        hist_data = stats.histogram(data, n_bins=11, normalize=False, x_min=-0.5, x_max=0.5)
+        chart = charts.LineChart(hist_data, data_name='histogram', x_axis=(-0.5, 0.5, 0.1))
         chart.add_data('raw', data)
         return chart
 
@@ -470,8 +458,8 @@ def _build_plugin_graph(name):
         data = []
         for plugin in models.QuestionPlugin.objects.all():
             data.append((
-                    plugin.name + \
-                    ((plugin.is_adaptive) and ' [adaptive]' or ' [simple]'),
+                    plugin.name +
+                    (plugin.is_adaptive and ' [adaptive]' or ' [simple]'),
                     plugin.question_set.count(),
                 ))
         return charts.PieChart(data)

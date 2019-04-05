@@ -43,12 +43,14 @@ class LexemeSurface(models.Model):
     """A surface rendering of the word."""
     lexeme = models.ForeignKey(Lexeme, related_name='surface_set')
     surface = models.CharField(max_length=60, db_index=True)
-    priority_codes = models.CharField(blank=True, max_length=60, null=True,
-            help_text='Any annotations the original dictionary provided')
+    priority_codes = models.CharField(
+        blank=True, max_length=60, null=True,
+        help_text='Any annotations the original dictionary provided')
     has_kanji = models.BooleanField(
-            help_text='Does this entry contain any kanji characters?')
-    in_lexicon = models.BooleanField(default=True,
-            help_text='Is this part of the original lexicon?')
+        help_text='Does this entry contain any kanji characters?')
+    in_lexicon = models.BooleanField(
+        default=True,
+        help_text='Is this part of the original lexicon?')
 
     class Meta:
         unique_together = (('lexeme', 'surface'),)
@@ -62,7 +64,7 @@ class LexemeSurface(models.Model):
                 return random.choice(matches)
 
     def _get_prob(self):
-        return models.LexemeSurfaceProb.objects.get(symbol=self.surface)
+        return LexemeSurfaceProb.objects.get(symbol=self.surface)
     prob = property(_get_prob)
     
     def __unicode__(self):
@@ -91,7 +93,7 @@ class LexemeSense(models.Model):
     class Meta:
         # XXX Uniqueness constraint doesn't work due in mysql due to length of
         #   gloss field.
-        #unique_together = (('lexeme', 'gloss'),)
+        # unique_together = (('lexeme', 'gloss'),)
         pass
 
     def __unicode__(self):
@@ -100,14 +102,16 @@ class LexemeSense(models.Model):
     @classmethod
     def sample_n(cls, n):
         surface_set = LexemeSurfaceProb.sample_n(n)
-        return cls.objects.filter(lexeme__surface_set__in=surface_set,
-                is_first_sense=True)
+        return cls.objects.filter(
+            lexeme__surface_set__in=surface_set,
+            is_first_sense=True)
 
 
 class KanjiProb(prob_models.Prob):
     """A frequency distribution over kanji."""
-    _freq_dist_file = path.join(settings.DATA_DIR, 'corpus',
-            'jp_char_corpus_counts.gz')
+    _freq_dist_file = path.join(
+        settings.DATA_DIR, 'corpus',
+        'jp_char_corpus_counts.gz')
 
     def _get_kanji(self):
         return Kanji.objects.get(kanji=self.symbol)
@@ -129,8 +133,8 @@ class KanjiProb(prob_models.Prob):
 
 class KanjiReadingProb(prob_models.Prob):
     """A frequency distribution of kanji pronunciations."""
-    _freq_dist_file = path.join(settings.DATA_DIR, 'corpus',
-            'kanji_reading_counts')
+    _freq_dist_file = path.join(
+        settings.DATA_DIR, 'corpus', 'kanji_reading_counts')
         
     class Meta(prob_models.Prob.Meta):
         verbose_name = 'probability of reading'
@@ -153,12 +157,11 @@ class KanjiReadingCondProb(prob_models.CondProb):
     ...     condition=unicode('日', 'utf8')).count()
     45
     """
-    _freq_dist_file = path.join(settings.DATA_DIR, 'corpus',
-            'kanji_reading_counts')
+    _freq_dist_file = path.join(
+        settings.DATA_DIR, 'corpus', 'kanji_reading_counts')
     
     def _get_kanji_reading(self):
-        return KanjiReading.objects.get(kanji=self.condition,
-                reading=self.symbol)
+        return KanjiReading.objects.get(kanji=self.condition, reading=self.symbol)
     kanji_reading = property(_get_kanji_reading)
     
     class Meta(prob_models.CondProb.Meta):
@@ -168,19 +171,21 @@ class KanjiReadingCondProb(prob_models.CondProb):
     @classmethod
     def fetch_dist(cls, condition):
         return probability.FixedProb((o.symbol, o.pdf) for o in
-                cls.objects.filter(condition=condition).all())
+                                     cls.objects.filter(condition=condition).all())
     
     @classmethod
     def initialise(cls):
-        dist = probability.ConditionalFreqDist.from_file(cls._freq_dist_file,
-                format='packed')
+        dist = probability.ConditionalFreqDist.from_file(
+            cls._freq_dist_file,
+            format='packed')
         cls.from_dist(dist)
     
     @classmethod
     def sample_kanji_reading(cls):
         row = cls.sample()
-        return models.KanjiReading.objects.get(kanji=row.condition,
-                reading=row.symbol)
+        return KanjiReading.objects.get(
+            kanji=row.condition,
+            reading=row.symbol)
 
     def __unicode__(self):
         return u'%s /%s/ %g' % (
@@ -192,8 +197,7 @@ class KanjiReadingCondProb(prob_models.CondProb):
 
 class LexemeSurfaceProb(prob_models.Prob):
     """A probability distribution over lexical surface items."""
-    _freq_dist_file = path.join(settings.DATA_DIR, 'corpus',
-            'jp_word_corpus_counts.gz')
+    _freq_dist_file = path.join(settings.DATA_DIR, 'corpus', 'jp_word_corpus_counts.gz')
 
     class Meta(prob_models.Prob.Meta):
         verbose_name = 'probability of lexeme surface'
@@ -244,8 +248,7 @@ class Kanji(models.Model):
         KanjiReading.objects.all().delete()
         Kanji.objects.all().delete()
         kjd = kanjidic.Kanjidic.get_cached()
-        max_gloss_len = [f for f in cls._meta.fields \
-                if f.name == 'gloss'][0].max_length
+        max_gloss_len = [f for f in cls._meta.fields if f.name == 'gloss'][0].max_length
         for entry in kjd.itervalues():
             truncated_gloss = ', '.join(entry.gloss)[:max_gloss_len]
             kanji = Kanji(kanji=entry.kanji, gloss=truncated_gloss)
@@ -271,8 +274,9 @@ class KanjiReading(models.Model):
     reading_type = models.CharField(max_length=1, choices=READING_TYPES)
     
     def _get_prob(self):
-        return KanjiReadingCondProb.objects.get(condition=self.kanji,
-                symbol=self.reading)
+        return KanjiReadingCondProb.objects.get(
+            condition=self.kanji,
+            symbol=self.reading)
     prob = property(_get_prob)
     
     class Meta:

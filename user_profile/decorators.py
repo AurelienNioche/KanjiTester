@@ -28,5 +28,3 @@ def profile_required(view_method):
         return view_method(request)
 
     return maybe_redirect
-
-# vim: ts=4 sw=4 sts=4 et tw=78:

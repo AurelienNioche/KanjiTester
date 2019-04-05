@@ -13,6 +13,7 @@ An application which provides basic and exact lexical access.
 
 # Dependencies
 
+
 def build():
     import load_lexicon
     load_lexicon.load_lexicon()

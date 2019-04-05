@@ -28,7 +28,7 @@ _checksum_tag = 'lexicon'
 
 
 def load_lexicon(filename=_jmdict_path):
-    " Reloads the lexicon into the database."
+    """"Reloads the lexicon into the database."""
     log.start('Rebuilding the lexicon', nSteps=5)
     if not Checksum.needs_update(_checksum_tag, _dependencies + [filename]):
         log.finish('Already up-to-date')

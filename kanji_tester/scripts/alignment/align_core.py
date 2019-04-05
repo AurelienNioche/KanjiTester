@@ -36,6 +36,7 @@ def iter_words(syllabus_name):
             seen_set.add(word)
             yield word
 
+
 def _database_stream(syllabus_name):
     syllabus = models.Syllabus.objects.get(tag=syllabus_name.replace('_', ' '))
     for partial_lexeme in syllabus.partiallexeme_set.all():
@@ -43,5 +44,3 @@ def _database_stream(syllabus_name):
         for reading in partial_lexeme.reading_set.all():
             for surface in partial_lexeme.surface_set.filter(has_kanji=True):
                 yield WordEntry(reading.reading, surface.surface, '')
-
-# vim: ts=4 sw=4 sts=4 et tw=78:

@@ -15,11 +15,11 @@ from django import template
 
 register = template.Library()
 
+
 @register.filter
 def first_n(values, n):
-    "Returns the first n items of a list."
+    """Returns the first n items of a list."""
     if type(values) != list or type(n) != int or n < 0:
         return values
 
     return values[:n]
-    

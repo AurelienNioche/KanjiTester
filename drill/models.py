@@ -14,6 +14,8 @@ from django.db import models
 from django.core.mail import send_mail
 from django.contrib.auth import models as auth_models
 from django.conf import settings
+
+from django.utils import timezone
 # from cjktools.exceptions import NotYetImplementedError
 from cjktools import scripts
 
@@ -108,13 +110,14 @@ class Question(models.Model):
             )
 
     def instructions(self):
-        return INSTRUCTIONS[self.question_type] % \
-                    self.get_pivot_type_display()
+        instructions = INSTRUCTIONS[str(self.question_type)] % self.get_pivot_type_display()
+        #print(instructions)
+        return instructions
         # def fget(self):
         #     return INSTRUCTIONS[self.question_type] % \
         #             self.get_pivot_type_display()
         # return locals()
-    # instructions = property(**instructions(self))
+    # instructions = property(**instructions())
 
     def get_pivot_item(self):
         if self.pivot_type == 'k':
@@ -243,7 +246,7 @@ class TestSet(models.Model):
     questions = models.ManyToManyField(MultipleChoiceQuestion)
     responses = models.ManyToManyField(MultipleChoiceResponse)
     random_seed = models.IntegerField()
-    start_time = models.DateTimeField(auto_now_add=True)
+    start_time = models.DateTimeField(default=timezone.now)
     end_time = models.DateTimeField(blank=True, null=True)
     set_type = models.CharField(max_length=1, choices=(
             ('c', 'control'),
@@ -256,8 +259,7 @@ class TestSet(models.Model):
 
     @staticmethod
     def get_latest_completed(user):
-        return TestSet.objects.filter(user=user).exclude(end_time=None
-                ).order_by('-end_time')[0]
+        return TestSet.objects.filter(user=user).exclude(end_time=None).order_by('-end_time')[0]
 
     def ordered_questions(self):
         question_list = list(self.questions.order_by('id'))
@@ -284,8 +286,7 @@ class TestSet(models.Model):
 
     def get_accuracy(self):
         try:
-            return float(self.responses.filter(option__is_correct=True
-                    ).count()) / self.questions.count()
+            return float(self.responses.filter(option__is_correct=True).count()) / self.questions.count()
         except ZeroDivisionError:
             return
     accuracy = property(get_accuracy)

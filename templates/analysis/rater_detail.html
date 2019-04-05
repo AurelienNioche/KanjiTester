@@ -62,18 +62,18 @@
     <td>
       <img src="{{word_chart.get_url}}">
       <p align="center">
-        <a href="{% url analysis_rater_csv rater_id=rater.id,data_type="word" %}">Download as csv</a>
+        <a href="{% url "analysis_rater_csv" with rater_id=rater.id data_type="word" %}">Download as csv</a>
       </p>
     </td>
     <td>
       <img src="{{kanji_chart.get_url}}">
       <p align="center">
-        <a href="{% url analysis_rater_csv rater_id=rater.id,data_type="kanji" %}">Download as csv</a>
+        <a href="{% url "analysis_rater_csv" with rater_id=rater.id data_type="kanji" %}">Download as csv</a>
       </p>
     </td>
   </tr>
 </table>
-<form method="GET" action="{% url analysis_raters %}">
+<form method="GET" action="{% url "analysis_raters" %}">
   <p><input type="submit" value="Back to raters"></input></p>
 </form>
 {% endblock %}

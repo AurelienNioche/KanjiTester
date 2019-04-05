@@ -11,7 +11,8 @@
 """
 """
 
-import sys, optparse
+import sys
+import optparse
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
@@ -23,6 +24,7 @@ from user_profile.models import UserProfile
 from user_model.models import Syllabus
 
 _log = consoleLog.default
+
 
 def clean_all():
     _log.start('Performing default cleaning steps')

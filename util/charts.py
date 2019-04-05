@@ -21,9 +21,13 @@ from simplestats.sequences import unzip
 _google_charts_url = "http://chart.apis.google.com/chart?"
 _default_size = '750x375'
 
-class UrlTooLongError(Exception): pass
+
+class UrlTooLongError(Exception):
+    pass
+
 
 _default_data_name = 'charted'
+
 
 class Chart(dict):
     """An abstract chart, and associated data."""
@@ -75,7 +79,8 @@ class Chart(dict):
     
     def get_all_data(self):
         return self._data.copy()
-            
+
+
 class PieChart(Chart):
     def __init__(self, data, **kwargs):
         try:
@@ -99,7 +104,7 @@ class PieChart(Chart):
         self['chl'] = '|'.join(map(smart_str, labels))
 
     def __truncate_options(self, sorted_data, max_options):
-        "Truncates the data to the number of options given."
+        """Truncates the data to the number of options given."""
         other_value = 0.0
         while len(sorted_data) > max_options - 1:
             other_value += sorted_data.pop()[1]
@@ -111,6 +116,7 @@ class PieChart(Chart):
         total = float(sum(x[1] for x in data))
         return [(l, 100*v/total) for (l, v) in data]
 
+
 class BaseLineChart(Chart):
     def _stringify(self, values):
         result = []
@@ -118,7 +124,8 @@ class BaseLineChart(Chart):
             result.append('%.02f' % v)
         
         return ','.join(result)
-        
+
+
 class SimpleLineChart(BaseLineChart):
     def __init__(self, data, x_axis=None, y_axis=None, **kwargs):
         self.x_axis = x_axis or automatic_axis(range(len(data[0])))
@@ -135,9 +142,7 @@ class SimpleLineChart(BaseLineChart):
         self.transform = t
         
         self['chxt'] = 'x,y'
-        self['chxr'] = '0,%d,%d,%.02f|1,%.02f,%.02f,%.02f' % (
-                self.x_axis + self.y_axis
-            )
+        self['chxr'] = '0,%d,%d,%.02f|1,%.02f,%.02f,%.02f' % (self.x_axis + self.y_axis)
 
     def _data_string(self, vectors):
         return 't:' + '|'.join(','.join(smart_str(v) for v in vec) for vec in
@@ -164,6 +169,7 @@ class LineChart(BaseLineChart):
         
         self['chd'] = 't:' + self._stringify(x_values) + '|' + \
                         self._stringify(y_values)
+
 
 class MultiLineChart(BaseLineChart):
     """
@@ -207,6 +213,7 @@ class MultiLineChart(BaseLineChart):
                 )) for vec in y_values
             )
 
+
 class BarChart(Chart):
     def __init__(self, data, y_axis=None, **kwargs):
         labels, points = unzip(data)
@@ -225,7 +232,6 @@ class BarChart(Chart):
 
         self['chd'] = 't:' + (','.join(map(smart_str, norm_points)))
 
-#----------------------------------------------------------------------------#
 
 class Transform(object):
     """
@@ -307,6 +313,7 @@ class Transform(object):
                 self.offset, self.multiplier
             )
 
+
 def automatic_axis(*vectors):
     """
     Returns an automatically determined axis specification for the given 
@@ -320,6 +327,7 @@ def automatic_axis(*vectors):
     else:
         return choose_float_axis(min_value, max_value)
 
+
 def is_all_integer(*vectors):
     for vector in vectors:
         for value in vector:
@@ -327,6 +335,7 @@ def is_all_integer(*vectors):
                 return False
     
     return True
+
 
 def choose_float_axis(min_value, max_value):
     """
@@ -340,6 +349,7 @@ def choose_float_axis(min_value, max_value):
 
     tick = (max_value - min_value) / 10.0
     return min_value, max_value, tick
+
 
 def choose_integer_axis(min_value, max_value):
     """
@@ -359,6 +369,7 @@ def choose_integer_axis(min_value, max_value):
     
     return new_min, new_max, tick
 
+
 def choose_integer_tick(min_value, max_value, max_ticks=10):
     """
     >>> choose_integer_tick(0, 20)
@@ -372,6 +383,7 @@ def choose_integer_tick(min_value, max_value, max_ticks=10):
     for tick in _iter_ranges():
         if diff / tick <= max_ticks:
             return tick
+
 
 def choose_max_value(current_max, multiple=5):
     """
@@ -388,6 +400,7 @@ def choose_max_value(current_max, multiple=5):
         return current_max
     return ((int(current_max) / multiple) + 1) * multiple
 
+
 def _iter_ranges():
     """
     Returns a generator for an infinite sequence of salient tick values.
@@ -401,6 +414,7 @@ def _iter_ranges():
         for x in base:
             yield x * multiplier
         multiplier *= 10
+
 
 def smart_str(value):
     """
@@ -436,6 +450,7 @@ def smart_str(value):
     else:
         raise TypeError('unknown value type')
 
+
 def color_desc(n_steps):
     """
     >>> color_desc(1) == to_hex(*_default_start_color)
@@ -445,8 +460,10 @@ def color_desc(n_steps):
     """
     return ','.join(interpolate_color(n_steps))
 
+
 _default_start_color = (30, 30, 255)
 _default_end_color = (214, 214, 255)
+
 
 def interpolate_color(n_steps, start_color=_default_start_color,
         end_color=_default_end_color):
@@ -471,6 +488,7 @@ def interpolate_color(n_steps, start_color=_default_start_color,
 
     return results
 
+
 def interpolate(start, end, n_steps):
     """
     >>> interpolate(0, 10, 6)
@@ -485,6 +503,7 @@ def interpolate(start, end, n_steps):
         results.append(int(start + i*diff + eps))
 
     return results
+
 
 def to_hex(r, g, b):
     """
@@ -502,11 +521,13 @@ def to_hex(r, g, b):
 
     return ''.join(results)
 
+
 def dummy_urlencode(val_dict):
     parts = []
     for key, value in sorted(val_dict.items()):
         parts.append('%s=%s' % (key, value))
     return '&'.join(parts)
+
 
 def check_range(start, end, values):
     """
@@ -526,8 +547,10 @@ def check_range(start, end, values):
                 value, start, end
             ))
 
+
 def minmin(vectors):
     return min(min(vec) for vec in vectors)
+
 
 def maxmax(vectors):
     return max(max(vec) for vec in vectors)
@@ -540,6 +563,7 @@ def compress_data(data_s):
     data_s = strip_decimals(data_s)
     return data_s
 
+
 def strip_decimals(data_s):
     """
     >>> strip_decimals('t:0.00,0.10,0.20')
@@ -550,6 +574,7 @@ def strip_decimals(data_s):
     data_s = re.sub(r'\.0+,', r',', data_s)
     data_s = re.sub(r'(\.[0-9]+?)0+', r'\1', data_s)
     return data_s
+
 
 def is_numeric(obj):
     """
@@ -566,5 +591,3 @@ def is_numeric(obj):
     """
     attrs = ['__add__', '__sub__', '__mul__', '__div__', '__pow__']
     return all(hasattr(obj, attr) for attr in attrs)
-
-# vim: ts=4 sw=4 sts=4 et tw=78:

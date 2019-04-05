@@ -13,7 +13,7 @@ from __future__ import with_statement
 import sys, optparse
 from consoleLog import default as _log
 from consoleLog import withProgress
-import simplejson
+import json
 
 from user_profile import models as userprofile_models
 from drill import models as drill_models
@@ -23,6 +23,7 @@ EXCLUDE_EMAILS = (
         'lars@yencken.org',
         'tim@csse.unimelb.edu.au',
     )
+
 
 def export_logs():
     _log.start('Dumping logs', nSteps=2)
@@ -35,6 +36,7 @@ def export_logs():
     _dump_responses('kanjitester_responses_%s.json' % datestamp)
 
     _log.finish()
+
 
 def _dump_users(filename):
     _log.log(filename)
@@ -54,8 +56,9 @@ def _dump_users(filename):
                         ]),
                         'syllabus': user_profile.syllabus.tag,
                     }
-            print >> ostream, simplejson.dumps(record)
-        
+            print >> ostream, json.dumps(record)
+
+
 def _dump_responses(filename):
     _log.log(filename + ' ', newLine=False)
     with open(filename, 'w') as ostream:
@@ -80,19 +83,19 @@ def _dump_responses(filename):
                         'correct_response': question.multiplechoicequestion.options.get(is_correct=True).value,
                         'user_response': response.option.value,
                     }
-                print >> ostream, simplejson.dumps(record)
+                print >> ostream, json.dumps(record)
 
-#----------------------------------------------------------------------------#
 
 def _create_option_parser():
     usage = \
-"""%prog [options]
-
-Dumps sanitized user logs."""
+        """%prog [options]
+        
+        Dumps sanitized user logs."""
 
     parser = optparse.OptionParser(usage)
 
     return parser
+
 
 def main(argv):
     parser = _create_option_parser()
@@ -104,9 +107,6 @@ def main(argv):
 
     export_logs()
 
-#----------------------------------------------------------------------------#
 
 if __name__ == '__main__':
     main(sys.argv[1:])
-
-# vim: ts=4 sw=4 sts=4 et tw=78:

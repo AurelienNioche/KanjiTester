@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # 
-#  context_processors.py
+#  kanji_tester/context_processors.py
 #  kanji_tester
 #  
 #  Created by Lars Yencken on 2008-06-23.

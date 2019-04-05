@@ -8,13 +8,13 @@
 #
 
 import re
-import datetime
 import random
 
 from django import forms
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
 from django.utils.encoding import force_unicode
+from django.utils import timezone
 
 from . import models
 
@@ -29,7 +29,7 @@ class QuestionField(forms.ChoiceField):
                         for opt in options
                     ]),
                 widget=forms.RadioSelect,
-                help_text=question.instructions,
+                help_text=question.instructions(),
                 label=question.stimulus,
             )
 
@@ -61,12 +61,12 @@ class TestSetForm(forms.Form):
             self.has_answers = False
 
     def _save_responses(self):
-        "Saves the user's responses to the test set questions."
+        """Saves the user's responses to the test set questions."""
         assert self.is_valid()
-        chosen_option_ids, question_ids, user_responses = \
-                self._record_responses()
-        options = self._score_responses(question_ids, user_responses)
-        return
+        chosen_option_ids, question_ids, user_responses = self._record_responses()
+        # options = self._score_responses(question_ids, user_responses)
+        self._score_responses(question_ids, user_responses)
+        # return
 
     def _record_responses(self):
         self.test_set.responses.all().delete()
@@ -87,7 +87,7 @@ class TestSetForm(forms.Form):
                     user_id=self.test_set.user_id,
                 )
 
-        self.test_set.end_time = datetime.datetime.now()
+        self.test_set.end_time = timezone.now()
         self.test_set.save()
         return chosen_option_ids, question_ids, user_responses
 
@@ -110,7 +110,7 @@ class TestSetForm(forms.Form):
         return options
 
     def as_table(self):
-        "Returns an html table representation of this test set."
+        """Returns an html table representation of this test set."""
         return mark_safe(self._html_output(
                 # normal row
                 """<tr><td class="test-set"><div class="instructions">%(help_text)s</div><div class="stimulus-cjk">%(label)s</div><div class="mc-select">%(field)s</div>%(errors)s""",
@@ -133,7 +133,8 @@ class TestSetForm(forms.Form):
     def as_ul(self):
         raise Exception("not supported")
 
-    def _html_output(self, normal_row, correct_row, incorrect_row, error_row,
+    def _html_output(
+            self, normal_row, correct_row, incorrect_row, error_row,
             row_ender, help_text_html, errors_on_separate_row):
         """
         Helper function for outputting HTML. Used by as_table(), as_ul(),
@@ -148,13 +149,11 @@ class TestSetForm(forms.Form):
             bf = forms.forms.BoundField(self, field, name)
 
             # Escape and cache in local variable.
-            bf_errors = self.error_class([escape(error) for error in \
-                    bf.errors])
+            bf_errors = self.error_class([escape(error) for error in bf.errors])
 
             if bf.is_hidden:
                 if bf_errors:
-                    top_errors.extend([u'(Hidden field %s) %s' % (name, \
-                            force_unicode(e)) for e in bf_errors])
+                    top_errors.extend([u'(Hidden field %s) %s' % (name, force_unicode(e)) for e in bf_errors])
                 hidden_fields.append(unicode(bf))
             else:
                 if errors_on_separate_row and bf_errors:
@@ -177,8 +176,7 @@ class TestSetForm(forms.Form):
                 # Custom code for testing field correctness
                 field_output = unicode(bf)
                 if hasattr(field, 'is_correct'):
-                    template = (field.is_correct and correct_row or \
-                            incorrect_row)
+                    template = (field.is_correct and correct_row or incorrect_row)
                     field_output = re.sub(
                             u'<input ',
                             u'<input disabled="disabled" ',
@@ -221,5 +219,3 @@ class TestSetForm(forms.Form):
                 # hidden fields.
                 output.append(str_hidden)
         return mark_safe(u'\n'.join(output))
-
-# vim: ts=4 sw=4 sts=4 et tw=78:

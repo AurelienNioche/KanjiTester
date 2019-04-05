@@ -18,6 +18,7 @@ from cjktools.common import sopen
 
 import align_core
 
+
 def to_alignment_format(syllabus_name, output_file):
     o_stream = sopen(output_file, 'w')
     for word in align_core.iter_words(syllabus_name):
@@ -25,20 +26,21 @@ def to_alignment_format(syllabus_name, output_file):
             print >> o_stream, word.surface, word.reading
     o_stream.close()
 
-#----------------------------------------------------------------------------#
 
 def _create_option_parser():
     usage = \
-"""%prog [options] syllabus_name ouput_file
-
-Converts the syllabus word file into alignment format."""
+        """%prog [options] syllabus_name ouput_file
+        
+        Converts the syllabus word file into alignment format."""
 
     parser = optparse.OptionParser(usage)
 
-    parser.add_option('--db', action='store_true', dest='use_database',
-            default=False, help='Use surfaces from the database')
+    parser.add_option(
+        '--db', action='store_true', dest='use_database',
+        default=False, help='Use surfaces from the database')
 
     return parser
+
 
 def main(argv):
     parser = _create_option_parser()
@@ -52,9 +54,6 @@ def main(argv):
 
     return to_alignment_format(syllabus_name, output_name)
 
-#----------------------------------------------------------------------------#
 
 if __name__ == '__main__':
     main(sys.argv[1:])
-
-# vim: ts=4 sw=4 sts=4 et tw=78:

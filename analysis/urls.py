@@ -9,7 +9,7 @@
 
 from django.conf.urls import url
 
-from kanji_tester.analysis.views import basic, chart_dashboard, data, raters, pivots, rater_csv, pivots_by_syllabus, \
+from analysis.views import basic, chart_dashboard, data, raters, pivots, rater_csv, pivots_by_syllabus, \
     pivot_detail, rater_detail
 
 urlpatterns = (

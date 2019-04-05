@@ -7,7 +7,7 @@
 <h2>Log in</h2>
 
 {% if form.errors %}
-<p class="error">Please correct the errors below:</p>
+<p class="error">Your username and password didn't match. Please try again.</p>
 {% endif %}
 
 <form method="POST" action="?next={{ next|default:"/" }}">
@@ -19,9 +19,9 @@
       <label for="id_username">Username:</label>
     </td>
     <td>{{ form.username }}
-      {% if form.username.errors %}
-      <span class="error">{{ form.username.errors|join:", " }}</span>
-      {% endif %}
+{#      {% if form.username.errors %}#}
+{#      <span class="error">{{ form.username.errors|join:", " }}</span>#}
+{#      {% endif %}#}
     </td>
   </tr>
   <tr>
@@ -30,9 +30,9 @@
     </td>
     <td>
       {{ form.password }}
-      {% if form.password.errors %}
-      <span class="error">{{ form.password.errors|join:", " }}</span>
-      {% endif %}
+{#      {% if form.password.errors %}#}
+{#      <span class="error">{{ form.password.errors|join:", " }}</span>#}
+{#      {% endif %}#}
     </td>
   </tr>
 </table>
@@ -41,7 +41,7 @@
 <p><input type="submit" value="Log-in &rarr;" /></p>
 </form>
 
-<p>If you have forgotten your password, <a href="/accounts/password/reset/">click here</a> to reset your password.</p>
+{#<p>If you have forgotten your password, <a href="/accounts/password/reset/">click here</a> to reset your password.</p>#}
 {% endblock %}
 
 {% block content-related %}

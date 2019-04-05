@@ -12,6 +12,7 @@ import random
 from nltk import probability as nltk_prob
 from cjktools.common import sopen
 
+
 class FreqDist(nltk_prob.FreqDist):
     """
     >>> x = FreqDist()
@@ -137,7 +138,7 @@ class ConditionalFreqDist(nltk_prob.ConditionalFreqDist):
         return result
 
     def itercounts(self):
-        "Returns an iterator over (condition, symbol, count) pairs."
+        """Returns an iterator over (condition, symbol, count) pairs."""
         for condition in self.conditions():
             cond_dist = self[condition]
             for symbol in cond_dist.keys():  # cond_dist.samples():
@@ -313,8 +314,7 @@ class SeqDist(ProbDist):
                 old_dist = current
             else:
                 fixed_char = new_dist
-                old_dist = dict((k + (fixed_char,), v) for (k,v) in \
-                        old_dist.iteritems())
+                old_dist = dict((k + (fixed_char,), v) for (k, v) in old_dist.iteritems())
 
         self._segments = {}
         for segments, pdf in old_dist.iteritems():
@@ -334,4 +334,3 @@ class SeqDist(ProbDist):
                 self._segments.__getitem__,
                 ProbDist.sample_n(self, n, exclude_set),
             )
-

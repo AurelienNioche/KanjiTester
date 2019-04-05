@@ -7,10 +7,11 @@
 #  Copyright 2008-06-13 Lars Yencken. All rights reserved.
 # 
 
-import time
+
 
 from django.shortcuts import render
 from django.conf import settings
+from django.utils import timezone
 
 from drill import models as drill_models
 from drill import stats
@@ -52,17 +53,17 @@ def test_user(request):
 
     if 'test_set_id' not in request.POST:
         n_questions = settings.QUESTIONS_PER_SET
-        start_time = time.time()
+        start_time = timezone.now()  # time.time()
         if request.method == 'POST' and 'n_questions' in request.POST:
             n_questions = int(request.POST['n_questions'])
         test_set = drill_models.TestSet.from_user(request.user, n_questions=n_questions)
         form = TestSetForm(test_set)
-        time_taken = time.time() - start_time
+        time_taken = timezone.now() - start_time  # time.time() - start_time
         context['time_taken'] = time_taken
     else:
         if request.method != 'POST':
             raise Exception("expected a POST form")
-        test_set_id = int(request.REQUEST['test_set_id'])
+        test_set_id = int(request.POST['test_set_id'])
         test_set = drill_models.TestSet.objects.get(pk=test_set_id)
         form = TestSetForm(test_set, request.POST)
 

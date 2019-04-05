@@ -42,7 +42,7 @@
       <tr>
         <td>{{forloop.counter}}</td>
         <td>
-          <a href="{% url analysis_rater_detail rater_id=rater.user_id %}">{{rater.username}}</a>
+          <a href="{% url "analysis_rater_detail" with rater_id=rater.user_id %}">{{rater.username}}</a>
         </td>
         <td>{{rater.n_tests}}</td>
         <td>{{rater.n_responses}}</td>

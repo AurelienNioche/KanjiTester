@@ -20,6 +20,7 @@ Helper methods for constructing html, inspired by MochiKit.
 '<table><thead><tr><th>Header</th></tr></thead> <tbody></tbody></table>'
 """
 
+
 def _makeTagFunction(tag):
     def f(*children, **attribs):
         return '<%s%s>%s</%s>' % (
@@ -30,14 +31,17 @@ def _makeTagFunction(tag):
             )
     f.__name__ = tag.upper()
     return f
-            
+
+
 def _fromAttribs(**attribs):
     results = ['']
     for key, value in attribs.iteritems():
         results.append('%s="%s"' % (key, value))
     return ' '.join(results)
 
-_tags = ['p', 'td', 'tr', 'th', 'table', 'em', 'thead', 'tbody', 'br', 'ul',
+
+_tags = [
+    'p', 'td', 'tr', 'th', 'table', 'em', 'thead', 'tbody', 'br', 'ul',
     'ol', 'li', 'input', 'form', 'div', 'span']
     
 for tag in _tags:

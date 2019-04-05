@@ -37,4 +37,3 @@ def staff_only(view_f):
 
     return wrapper_f
 
-# vim: ts=4 sw=4 sts=4 et tw=78:

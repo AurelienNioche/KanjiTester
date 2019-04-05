@@ -11,13 +11,14 @@
 A command to clean usage logs.
 """
 
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 
-from kanji_tester.analysis import clean_data
+from analysis import clean_data
 
-class Command(NoArgsCommand):
+
+class Command(BaseCommand):
     help = "Cleans usage logs."
     requires_model_validation = True
 
-    def handle_noargs(self, **options):
+    def handle(self, *args, **options):
         clean_data.clean_all()

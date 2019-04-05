@@ -17,7 +17,7 @@
 <ul>
 {% for short_name, desc in column_1.charts %}
   <li>
-    <a href="{% url analysis_chart short_name %}">{{desc}}</a>
+    <a href="{% url "analysis_chart" with short_name %}">{{desc}}</a>
   </li>
 {% endfor %}
 </ul>
@@ -28,7 +28,7 @@
 <ul>
 {% for short_name, desc in column_2.charts %}
   <li>
-    <a href="{% url analysis_chart short_name %}">{{desc}}</a>
+    <a href="{% url "analysis_chart" with short_name %}">{{desc}}</a>
   </li>
 {% endfor %}
 </ul>
@@ -39,7 +39,7 @@
 <ul>
 {% for short_name, desc in column_3.charts %}
   <li>
-    <a href="{% url analysis_chart short_name %}">{{desc}}</a>
+    <a href="{% url "analysis_chart" with short_name %}">{{desc}}</a>
   </li>
 {% endfor %}
 </ul>
@@ -60,7 +60,7 @@
       <p align="center">
         Available data sets:
         {% for data_name in chart.available_data %}
-          <a href="{% url analysis_data_base %}{{name}}_{{data_name}}.csv">
+          <a href="{% url "analysis_data_base" %}{{name}}_{{data_name}}.csv">
             {{data_name}}
           </a>
           {% if not forloop.last %},{% endif %}

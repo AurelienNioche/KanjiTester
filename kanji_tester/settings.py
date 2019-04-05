@@ -32,8 +32,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
-    #
-    # 'kanji_tester.analysis',
+    'analysis',
     'checksum',
     'tutor',
     'lexicon',
@@ -53,14 +52,14 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'kanji_tester.middleware.TagLanguageMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'kanji_tester.middleware.TagLanguageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
 ROOT_URLCONF = 'kanji_tester.urls'
@@ -154,126 +153,6 @@ DATA_DIR = 'data'
 
 os.environ['CJKDATA'] = os.path.join(DATA_DIR, 'cjkdata')
 
-# from os import path
-#
-# PROJECT_NAME = 'Kanji Tester'
-#
-# DEBUG = True
-# TEMPLATE_DEBUG = DEBUG
-#
-# ADMINS = (
-#     # ('Your Name', 'your_email@domain.com'),
-# )
-#
-# MANAGERS = ADMINS
-#
-# DATABASE_ENGINE = ''           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-# DATABASE_NAME = ''             # Or path to database file if using sqlite3.
-# DATABASE_USER = ''             # Not used with sqlite3.
-# DATABASE_PASSWORD = ''         # Not used with sqlite3.
-# DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
-# DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
-
-# # Location of any additional resources
-# DATA_DIR = ''
-#
-# # Local time zone for this installation. Choices can be found here:
-# # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# # although not all choices may be available on all operating systems.
-# # If running in a Windows environment this must be set to the same as your
-# # system time zone.
-# TIME_ZONE = 'Australia/Melbourne'
-#
-# # Language code for this installation. All choices can be found here:
-# # http://www.i18nguy.com/unicode/language-identifiers.html
-# LANGUAGE_CODE = 'en-us'
-
-SITE_ID = 1
-
-# # If you set this to False, Django will make some optimizations so as not
-# # to load the internationalization machinery.
-# USE_I18N = True
-
-# PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-#
-# # Absolute path to the directory that holds static.
-# # Example: "/home/static/static.lawrence.com/"
-# MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'static')
-#
-# # URL that handles the static served from MEDIA_ROOT. Make sure to use a
-# # trailing slash if there is a path component (optional in other cases).
-# # Examples: "http://media.lawrence.com", "http://example.com/media/"
-# MEDIA_URL = '/static/'
-#
-# # URL prefix for admin static -- CSS, JavaScript and images. Make sure to use a
-# # trailing slash.
-# # Examples: "http://foo.com/media/", "/static/".
-# ADMIN_MEDIA_PREFIX = '/static/admin/'
-
-# # Make this unique, and don't share it with anybody.
-# SECRET_KEY = 'dc6hz00zcf8wym4hsx0jf-%c)_hq%n)rt55@*!(*3y9^48pj-s'
-#
-# # List of callables that know how to import templates from various sources.
-# TEMPLATE_LOADERS = (
-#     'django.template.loaders.filesystem.load_template_source',
-#     'django.template.loaders.app_directories.load_template_source',
-# #     'django.template.loaders.eggs.load_template_source',
-# )
-
-# MIDDLEWARE_CLASSES = (
-#     'django.middleware.gzip.GZipMiddleware',
-#     'django.middleware.common.CommonMiddleware',
-#     'django.contrib.sessions.middleware.SessionMiddleware',
-#     'django.contrib.auth.middleware.AuthenticationMiddleware',
-#     'django.middleware.doc.XViewMiddleware',
-#     'django.contrib.messages.middleware.MessageMiddleware',
-#     'kanji_tester.middleware.TagLanguageMiddleware',
-# )
-
-# TEMPLATE_CONTEXT_PROCESSORS = (
-#     'django.core.context_processors.auth',
-#     'django.core.context_processors.debug',
-#     'django.core.context_processors.i18n',
-#     'django.contrib.messages.context_processors.messages',
-#     'kanji_tester.context_processors.basic_vars',
-# )
-
-# ROOT_URLCONF = 'kanji_tester.urls'
-
-# TEMPLATE_DIRS = (
-#     os.path.join(PROJECT_ROOT, 'templates'),
-# )
-#
-# FIXTURE_DIRS = (
-#     os.path.join(PROJECT_ROOT, 'fixtures'),
-# )
-
-# INSTALLED_APPS = (
-#     'django.contrib.auth',
-#     'django.contrib.admin',
-#     'django.contrib.contenttypes',
-#     'django.contrib.humanize',
-#     'django.contrib.messages',
-#     'django.contrib.sessions',
-#     'django.contrib.sites',
-#     'kanji_tester.tutor',
-#     'kanji_tester.lexicon',
-#     'kanji_tester.drill',
-#     'kanji_tester.util',
-#     'kanji_tester.user_model',
-#     'kanji_tester.plugins.visual_similarity',
-#     'kanji_tester.plugins.reading_alt',
-#     'kanji_tester.plugins.reading_alt.hierarchy',
-#     'kanji_tester.user_profile',
-#     'kanji_tester.analysis',
-#     'checksum',
-#     'registration',
-#     'south',
-# )
-
-# TEST_DATABASE_CHARSET = 'utf8'
-# TEST_DATABASE_COLLATION = 'utf8_general_ci'
-
 CONTROL_DRILL_PLUGINS = (
     'plugins.basic_drills.ReadingQuestionFactory',
     'plugins.basic_drills.SurfaceQuestionFactory',
@@ -287,7 +166,7 @@ ADAPTIVE_DRILL_PLUGINS = (
 )
 
 DRILL_PLUGINS = list(set(CONTROL_DRILL_PLUGINS + ADAPTIVE_DRILL_PLUGINS))
-#
+
 USER_MODEL_PLUGINS = (
     'plugins.visual_similarity.visual_similarity.VisualSimilarity',
     'plugins.reading_alt.reading_alt.KanjiReadingModel',

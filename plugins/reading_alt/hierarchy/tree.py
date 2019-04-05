@@ -127,8 +127,7 @@ class TreeNode(object):
         if self.parent:
             raise Exception, "Cannot copy from a non-root node"
 
-        newRoot = TreeNode(self.label, self.children.copy(),
-                self.attrib.copy())
+        newRoot = TreeNode(self.label, self.children.copy(), self.attrib.copy())
 
         stack = [newRoot]
         while stack:
@@ -225,7 +224,7 @@ class TreeNode(object):
         return self.attrib.__setitem__(key, value)
 
     def __contains__(self, key):
-        return self.attrib.has_key(key)
+        return key in self.attrib
 
     def __delitem__(self, key):
         """Deletes the given attribute."""
