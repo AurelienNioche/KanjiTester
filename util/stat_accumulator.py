@@ -9,6 +9,7 @@
 
 import math
 
+
 class StatAccumulator(object):
     """
     A basic system for maintaining statistics about a sequence.
@@ -33,13 +34,13 @@ class StatAccumulator(object):
         self._sum_squared = 0.0
     
     def inc(self, value):
-        "Includes a value in the statistics being gathered."
+        """Includes a value in the statistics being gathered."""
         self._n += 1
         self._sum += value
-        self._sum_squared += value*value;
+        self._sum_squared += value*value
     
     def inc_all(self, seq):
-        "Increments the statistics for all values in the sequence."
+        """Increments the statistics for all values in the sequence."""
         for value in seq:
             self.inc(value)
     
@@ -51,24 +52,19 @@ class StatAccumulator(object):
         for value in seq:
             self.inc(value)
             yield value
-        
-    def mean():
-        doc = "The mean of the sequence."
-        def fget(self):
-            return self._sum / self._n
-        return locals()
-    mean = property(**mean())
-    
-    def var():
-        doc = "The variance of the sequence."
-        def fget(self):
-            return self._sum_squared / self._n - (self.mean ** 2)
-        return locals()
-    var = property(**var())
-    
-    def stddev():
-        doc = "The standard deviation of the sequence."
-        def fget(self):
-            return math.sqrt(self.var)
-        return locals()
-    stddev = property(**stddev())
+
+    @property
+    def mean(self):
+        """The mean of the sequence."""
+        return self._sum / self._n
+
+    @property
+    def var(self):
+        """The variance of the sequence."""
+        return self._sum_squared / self._n - (self.mean ** 2)
+
+    @property
+    def stddev(self):
+        """The standard deviation of the sequence."""
+
+        return math.sqrt(self.var)

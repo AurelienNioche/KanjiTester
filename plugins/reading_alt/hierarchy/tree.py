@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
-#----------------------------------------------------------------------------#
+
 # tree.py
 # Lars Yencken <lars.yencken@gmail.com>
 # vim: ts=4 sw=4 sts=4 et tw=78:
 # Thu Jul 26 16:52:28 2007
 #
-#----------------------------------------------------------------------------#
+
 
 """An abstract tree datatype."""
 
 
 from random import shuffle
+
+# from functools import total_ordering
 
 
 class TreeNode(object):
@@ -85,7 +87,7 @@ class TreeNode(object):
         return
 
     def walk_leaves(self):
-        for child in self.children.itervalues():
+        for child in self.children.values():
             for node in child.walk():
                 if not node.children:
                     yield node
@@ -125,7 +127,7 @@ class TreeNode(object):
         Returns a copy of the tree structure (but not the node values).
         """
         if self.parent:
-            raise Exception, "Cannot copy from a non-root node"
+            raise Exception("Cannot copy from a non-root node")
 
         newRoot = TreeNode(self.label, self.children.copy(), self.attrib.copy())
 
@@ -172,9 +174,6 @@ class TreeNode(object):
     def __repr__(self):
         return str(self)
 
-    def __cmp__(self, rhs):
-        return cmp(self.label, rhs.label)
-
     def add_child(self, child_node):
         """Adds the child node to this tree."""
         self.children[child_node.label] = child_node
@@ -192,7 +191,7 @@ class TreeNode(object):
 
     def get_path(self, path):
         """Get a particular path in the node."""
-        if type(path) in (str, unicode):
+        if isinstance(path, str):
             path = path.lstrip('/').split('/')
         else:
             assert type(path) == list
@@ -213,7 +212,7 @@ class TreeNode(object):
             if node.label == label:
                 return node
         else:
-            raise KeyError, label
+            raise KeyError(label)
 
     def __getitem__(self, key):
         """Returns the attribute matching the given key."""
@@ -235,6 +234,14 @@ class TreeNode(object):
         return self.label == rhs.label and \
                 self.attrib == rhs.attrib and \
                 self.children == rhs.children
+
+    def __lt__(self, rhs):
+        return self.label < rhs.label
+
+    def __gt__(self, rhs):
+        return self.label > rhs.label
+    # def __cmp__(self, rhs):
+    #     return cmp(self.label, rhs.label)
 
     def build_index(self):
         """
@@ -259,7 +266,7 @@ class TreeNode(object):
         if method is None:
             method = lambda n: n.label
 
-        print method(self)
+        print(method(self))
         self._layout_children(self, '', method)
         return
 
@@ -273,11 +280,11 @@ class TreeNode(object):
             return
 
         for child in children[:-1]:
-            print '%s├─ %s' % (prefix, method(child))
+            print('%s├─ %s' % (prefix, method(child)))
             self._layout_children(child, prefix + '│  ', method)
         
         child = children[-1]
-        print '%s└─ %s' % (prefix, method(child))
+        print('%s└─ %s' % (prefix, method(child)))
         self._layout_children(child, prefix + '   ', method)
 
         return
@@ -288,9 +295,6 @@ class TreeDist(object):
     A tree probability distribution, initialized by passing in a constructed
     tree which needs annotation.
     """
-    # ------------------------------------------------------------------------ #
-    # PUBLIC
-    # ------------------------------------------------------------------------ #
 
     def __init__(self, root, countMethod=len):
         """
@@ -365,8 +369,8 @@ class TreeDist(object):
 
         return newTreeDist
 
-    def union(self, rhs):
-        return self.union(rhs, f=lambda x, y: (x + y)/2.0, label='union')
-
-    def diff(self, rhs):
-        return self.union(rhs, f=lambda x, y: x - y, label='diff')
+    # def union(self, rhs):
+    #     return self.union(rhs, f=lambda x, y: (x + y)/2.0, label='union')
+    #
+    # def diff(self, rhs):
+    #     return self.union(rhs, f=lambda x, y: x - y, label='diff')

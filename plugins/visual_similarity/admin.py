@@ -7,5 +7,5 @@
 #  Copyright 2008 Lars Yencken. All rights reserved.
 # 
 
-from django.contrib import admin
+# from django.contrib import admin
 

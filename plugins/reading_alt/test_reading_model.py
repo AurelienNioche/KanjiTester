@@ -8,14 +8,14 @@
 # 
 
 import unittest
-from reading_model import *
+from plugins.reading_alt.reading_model import VoicingAndGeminationModel
 
 
-def suite():
-    testSuite = unittest.TestSuite((
-            unittest.makeSuite(KanjiReadingModelTestCase)
-        ))
-    return testSuite
+# def suite():
+#     testSuite = unittest.TestSuite((
+#             unittest.makeSuite(KanjiReadingModelTestCase)
+#         ))
+#     return testSuite
 
 
 class KanjiReadingModelTestCase(unittest.TestCase):
@@ -33,16 +33,15 @@ class KanjiReadingModelTestCase(unittest.TestCase):
 
         assert self.model.log_prob(g, base_reading, base_reading) < 0.0
         assert self.model.log_prob(g, base_reading, alternation) < 0.0
-        assert self.model.log_prob(g, base_reading, base_reading) > \
-                self.model.log_prob(g, base_reading, alternation)
+        assert self.model.log_prob(g, base_reading, base_reading) > self.model.log_prob(g, base_reading, alternation)
 
         return
 
     def testReverseMap(self):
-        reverseMap = self.model.get_reverse_mapping()
+        reverse_map = self.model.get_reverse_mapping()
 
-        assert u'校' in reverseMap[u'こう']
-        assert u'高' in reverseMap[u'こう']
+        assert u'校' in reverse_map[u'こう']
+        assert u'高' in reverse_map[u'こう']
         return
 
     def testBug159(self):
@@ -53,6 +52,6 @@ class KanjiReadingModelTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-
-if __name__ == "__main__":
-    unittest.TextTestRunner(verbosity=1).run(suite())
+#
+# if __name__ == "__main__":
+#     unittest.TextTestRunner(verbosity=1).run(suite())

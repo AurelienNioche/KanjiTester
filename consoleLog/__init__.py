@@ -15,7 +15,7 @@ __all__ = [
         'slot',
     ]
 
-#----------------------------------------------------------------------------#
+
 
 import consoleLog.consoleLog as consoleLog
 import consoleLog.progressBar as progressBar

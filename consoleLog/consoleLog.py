@@ -23,24 +23,22 @@ ABC
 >>> log.finish()
 """
 
-#----------------------------------------------------------------------------#
 
 import sys
-import codecs
+# import codecs
 
 _default_encoding = 'utf8'
 
-#----------------------------------------------------------------------------#
 
 class ConsoleLogger(object):
     """
     A console logging object, which can optionally be given an output stream
     which it prints to, defaulting to stdout.
     """
-    def __init__(self, output=None, trim=78, encoding=_default_encoding):
-        self.oStream = codecs.getwriter(encoding)(output or sys.stdout)
+    def __init__(self, output=None, trim=78):  # , encoding=_default_encoding):
+        self.oStream = open(output, 'w') if output else sys.stdout  # codecs.getwriter(encoding)(output or sys.stdout)
         self.logStack = []
-        self.trim=trim
+        self.trim = trim
 
     def start(self, message, nSteps=None):
         """
@@ -62,16 +60,20 @@ class ConsoleLogger(object):
                 padding.append(levelLogger.getIntermediatePadding())
             padding.append(self.logStack[-1].getCurrentPadding())
         else:
-            padding = u''
-        oLine = u'%s%s' % (u''.join(padding), message)
+            padding = ''
+        oLine = ''.join(padding) + f'{message}'   # % (u''.join(padding), message)
         if self.trim and len(oLine) > self.trim:
-            oLine = oLine[:self.trim - 3] + u'...'
-        self.oStream.write(oLine)
-        if newLine:
-            print >> self.oStream
-        else:
+            oLine = oLine[:self.trim - 3] + '...'
+
+        # if isinstance(oLine, bytes):
+        #     oLine = str(oLine)
+
+        # print(type(oLine))
+        print(oLine, file=self.oStream)
+        # self.oStream.write(oLine)
+        if not newLine:
             self.oStream.flush()
-        return
+            # print(file=self.oStream)
 
     def space(self):
         if self.logStack:
@@ -81,8 +83,7 @@ class ConsoleLogger(object):
             padding = u''.join(padding)
         else:
             padding = u''
-        print >> self.oStream, padding
-        return
+        print(padding, file=self.oStream)
 
     def finish(self, message="Done"):
         """
@@ -95,10 +96,8 @@ class ConsoleLogger(object):
         last = self.logStack.pop()
         padding.append(last.getLastPadding())
         if last.needsFinish():
-            print >> self.oStream, u"%s%s" % (u''.join(padding), message)
-        return
+            print(u"%s%s" % (u''.join(padding), message), file=self.oStream)
 
-#----------------------------------------------------------------------------#
 
 class _SectionPadding(object):
     """
@@ -128,5 +127,3 @@ class _SectionPadding(object):
 
     def getLastPadding(self):
         return u'└─ '
-
-#----------------------------------------------------------------------------#

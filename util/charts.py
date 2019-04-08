@@ -331,7 +331,7 @@ def automatic_axis(*vectors):
 def is_all_integer(*vectors):
     for vector in vectors:
         for value in vector:
-            if type(value) not in (int, long):
+            if not isinstance(value, int):
                 return False
     
     return True
@@ -344,7 +344,7 @@ def choose_float_axis(min_value, max_value):
     diff = max_value - min_value
     
     # If within 10% of 0, clamp the minimum value to 0
-    if min_value > 0 and min_value < 0.1 * diff:
+    if 0 < min_value < 0.1 * diff:
         min_value = 0.0
 
     tick = (max_value - min_value) / 10.0
@@ -405,7 +405,7 @@ def _iter_ranges():
     """
     Returns a generator for an infinite sequence of salient tick values.
     
-    >>> itr = _iter_ranges(); [itr.next() for i in xrange(7)]
+    >>> itr = _iter_ranges(); [itr.next() for i in range(7)]
     [1, 2, 5, 10, 20, 50, 100]
     """
     base = [1, 2, 5]
@@ -436,12 +436,12 @@ def smart_str(value):
     TypeError: unknown value type
     """
     val_type = type(value)
-    if val_type in (int, long):
+    if val_type == int:
         return str(value)
     elif val_type == str:
         return value
-    elif val_type == unicode:
-        return value.encode('utf8')
+    # elif val_type == unicode:
+    #     return value.encode('utf8')
     elif val_type == float:
         # Fixed decimal precision for charting (after scaling)
         n_sig = '%.02f' % value
@@ -499,7 +499,7 @@ def interpolate(start, end, n_steps):
     diff = (end - start) / float(n_steps-1)
     eps = 1e-6
     results = []
-    for i in xrange(n_steps):
+    for i in range(n_steps):
         results.append(int(start + i*diff + eps))
 
     return results

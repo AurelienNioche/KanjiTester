@@ -22,7 +22,7 @@ class StrokeTestCase(unittest.TestCase):
         """Verifies the stroke data using kanjidic."""
         kjd = kanjidic.Kanjidic.get_cached()
         signatures = self.dist.signatures
-        for kanji, signature in signatures.iteritems():
+        for kanji, signature in signatures.items():
             actualCount = len(signature)
             expectedCount = kjd[kanji].strokeCount
             assert abs(actualCount - expectedCount) <= 1, \

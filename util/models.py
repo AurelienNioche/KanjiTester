@@ -28,7 +28,7 @@ class ProbI(models.Model):
         abstract = True
 
     @classmethod
-    def sample(cls):
+    def sample(cls, condition=None):
         """Samples and returns an object from this distribution."""
         target_cdf = random.random()
         result = cls.objects.filter(cdf__gte=target_cdf).order_by('cdf')[0]
@@ -39,7 +39,7 @@ class ProbI(models.Model):
         if n < 1:
             raise ValueError(n)
 
-        target_cdfs = [random.random() for _ in xrange(n)]
+        target_cdfs = [random.random() for _ in range(n)]
         quote_name = connection.ops.quote_name
         table_name = quote_name(cls._meta.db_table)
         id_field = '%s.%s' % (table_name, quote_name('id'))
@@ -102,7 +102,7 @@ class CondProb(ProbI):
         return '%s | %s' % (self.symbol, self.condition)
 
     @classmethod
-    def sample(cls, condition):
+    def sample(cls, condition=None):
         """
         Samples and returns an object from this distribution given the 
         condition.

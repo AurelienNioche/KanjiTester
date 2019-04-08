@@ -41,6 +41,7 @@ class Checksum(models.Model):
 
     @staticmethod
     def checksum(files):
+        # print(files)
         result = 0
         for module_or_filename in files:
             # Replace module references with the file which defines them.
@@ -53,7 +54,7 @@ class Checksum(models.Model):
             if (filename.endswith('.pyc') or filename.endswith('.pyo')) and path.exists(filename[:-1]):
                 filename = filename[:-1]
 
-            i_stream = open(filename, 'r')
+            i_stream = open(filename, 'rb')
             result = crc32(i_stream.read(), result)
             i_stream.close()
 
@@ -108,5 +109,3 @@ class Checksum(models.Model):
         obj = Checksum(tag=tag, value=Checksum.checksum(files))
         obj.save()
         return
-
-# vim: ts=4 sw=4 sts=4 et tw=78:

@@ -13,6 +13,7 @@ All aspects of user proficiency and error modeling.
 
 # Dependencies
 
+
 def build():
-    import add_syllabus
+    from user_model import add_syllabus
     add_syllabus.add_all_syllabi()

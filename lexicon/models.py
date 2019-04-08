@@ -41,7 +41,7 @@ class Lexeme(models.Model):
 
 class LexemeSurface(models.Model):
     """A surface rendering of the word."""
-    lexeme = models.ForeignKey(Lexeme, related_name='surface_set')
+    lexeme = models.ForeignKey(Lexeme, related_name='surface_set', on_delete=models.CASCADE)
     surface = models.CharField(max_length=60, db_index=True)
     priority_codes = models.CharField(
         blank=True, max_length=60, null=True,
@@ -73,7 +73,7 @@ class LexemeSurface(models.Model):
 
 class LexemeReading(models.Model):
     """A valid pronunciation for a lexeme."""
-    lexeme = models.ForeignKey(Lexeme, related_name='reading_set')
+    lexeme = models.ForeignKey(Lexeme, related_name='reading_set', on_delete=models.CASCADE)
     reading = models.CharField(max_length=60, db_index=True)
     priority_codes = models.CharField(blank=True, max_length=60, null=True)
 
@@ -86,7 +86,7 @@ class LexemeReading(models.Model):
 
 class LexemeSense(models.Model):
     """A word sense."""
-    lexeme = models.ForeignKey(Lexeme, related_name='sense_set')
+    lexeme = models.ForeignKey(Lexeme, related_name='sense_set', on_delete=models.CASCADE)
     gloss = models.CharField(max_length=500)
     is_first_sense = models.BooleanField()
 
@@ -249,7 +249,7 @@ class Kanji(models.Model):
         Kanji.objects.all().delete()
         kjd = kanjidic.Kanjidic.get_cached()
         max_gloss_len = [f for f in cls._meta.fields if f.name == 'gloss'][0].max_length
-        for entry in kjd.itervalues():
+        for entry in kjd.values():
             truncated_gloss = ', '.join(entry.gloss)[:max_gloss_len]
             kanji = Kanji(kanji=entry.kanji, gloss=truncated_gloss)
             kanji.save()
@@ -268,7 +268,7 @@ class Kanji(models.Model):
 
 class KanjiReading(models.Model):
     """A reading for a single kanji."""
-    kanji = models.ForeignKey(Kanji, related_name='reading_set')
+    kanji = models.ForeignKey(Kanji, related_name='reading_set', on_delete=models.CASCADE)
     reading = models.CharField(max_length=21, db_index=True)
     READING_TYPES = (('o', 'on'), ('k', 'kun'))
     reading_type = models.CharField(max_length=1, choices=READING_TYPES)

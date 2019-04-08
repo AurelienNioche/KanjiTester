@@ -9,15 +9,15 @@
 
 import unittest
 import doctest
-import alternation_model
+from plugins.reading_alt import alternation_model
 
 
-def suite():
-    testSuite = unittest.TestSuite((
-            unittest.makeSuite(VowelLengthTestCase),
-            doctest.DocTestSuite(alternation_model)
-        ))
-    return testSuite
+# def suite():
+#     testSuite = unittest.TestSuite((
+#             unittest.makeSuite(VowelLengthTestCase),
+#             doctest.DocTestSuite(alternation_model)
+#         ))
+#     return testSuite
 
 
 class VowelLengthTestCase(unittest.TestCase):
@@ -44,11 +44,11 @@ class VowelLengthTestCase(unittest.TestCase):
         cs = [c[0] for c in self.model.candidates(None, u'きょう')]
         assert u'ょ' not in cs
         assert u'き' not in cs
-        assert set(cs) == set([u'きょう', u'きょ'])
+        assert set(cs) == {u'きょう', u'きょ'}
 
     def tearDown(self):
         pass
 
-
-if __name__ == "__main__":
-    unittest.TextTestRunner(verbosity=1).run(suite())
+#
+# if __name__ == "__main__":
+#     unittest.TextTestRunner(verbosity=1).run(suite())

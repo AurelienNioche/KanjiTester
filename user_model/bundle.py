@@ -15,16 +15,19 @@ from os import path
 import operator
 import glob
 
+from functools import reduce
+
 from django.conf import settings
 from cjktools import scripts
-from cjktools.common import sopen
+# from cjktools.common import sopen
 
 from util.alignment import AlignedFile
 
 _syllabi_path = path.join(settings.DATA_DIR, 'syllabus')
 
 
-class BundleError(Exception): pass
+class BundleError(Exception):
+    pass
 
 
 class SyllabusBundle(object):
@@ -101,7 +104,7 @@ def list_names():
 class CharFile(set):
     """A wrapper for syllabus character lists."""
     def __init__(self, filename):
-        i_stream = sopen(filename)
+        i_stream = open(filename, 'r')
         unique_kanji = scripts.unique_kanji
         for line in i_stream:
             if line.lstrip().startswith('#'):
@@ -134,8 +137,14 @@ class WordEntry(object):
     def _tuple(self):
         return (self.reading, self.surface, self.notes)
 
-    def __cmp__(self, rhs):
-        return cmp(self._tuple(), rhs._tuple())
+    # def __cmp__(self, rhs):
+    #     return cmp(self._tuple(), rhs._tuple())
+
+    def __lt__(self, rhs):
+        return self._tuple() < rhs._tuple()
+
+    def __gt__(self, rhs):
+        return self._tuple() > rhs._tuple()
 
     def __eq__(self, rhs):
         return self._tuple() == rhs._tuple()
@@ -149,7 +158,7 @@ class WordFile(object):
     """A wrapper for syllabus word files."""
     def __init__(self, filename):
         self._words = []
-        i_stream = sopen(filename)
+        i_stream = open(filename, 'r')
         for i, line in enumerate(i_stream):
             if line.lstrip().startswith('#'):
                 continue

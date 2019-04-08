@@ -35,7 +35,7 @@ def _makeTagFunction(tag):
 
 def _fromAttribs(**attribs):
     results = ['']
-    for key, value in attribs.iteritems():
+    for key, value in attribs.items():
         results.append('%s="%s"' % (key, value))
     return ' '.join(results)
 

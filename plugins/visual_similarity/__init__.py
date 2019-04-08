@@ -80,7 +80,7 @@
 #         return graph
 #
 #     def _store_graph(self, graph, prior_dist):
-#         for label, edge_seq in graph._heaps.iteritems():
+#         for label, edge_seq in graph._heaps.items():
 #             total_weight = 0.0
 #             for weight, neighbour_label in edge_seq:
 #                 total_weight += 1.0 - weight

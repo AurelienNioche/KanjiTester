@@ -14,16 +14,15 @@ Models for the user_profile app.
 from django.db import models
 from django.contrib.auth.models import User
 
-from user_model.models import Syllabus, ErrorDist
+from user_model.models import Syllabus
 
 
 class UserProfile(models.Model):
     """Basic model of the user's kanji knowledge and study goals."""
-    user = models.OneToOneField(User, related_name='profile')
-    syllabus = models.ForeignKey(Syllabus)
-    # errordist = models.ForeignKey(ErrorDist)
+    user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
+    syllabus = models.ForeignKey(Syllabus, on_delete=models.CASCADE)
     first_language = models.CharField(max_length=100)
     second_languages = models.CharField(max_length=200, null=True, blank=True)
 
-    def __unicode__(self):
-        return u"UserProfile for %s" % self.user.username
+    def __str__(self):
+        return f"UserProfile for {self.user.username}"

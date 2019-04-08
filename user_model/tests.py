@@ -28,6 +28,7 @@ class RegistrationTest(TestCase):
             self.assertEqual(prior_row.cdf, error_row.cdf)
             self.assertEqual(prior_row.pdf, error_row.pdf)
 
+
 class UpdateTest(TestCase):
     fixtures = ['test_update']
     def test_update(self):
@@ -45,14 +46,13 @@ class UpdateTest(TestCase):
         self.assertAlmostEqual(error_dist.density.get(condition="sea",
                 symbol="fish").pdf, 1.0) 
 
+
 class AddSyllabusTest(TestCase):
     def test_add(self):
-        import add_syllabus
+        from user_model import add_syllabus
         from lexicon import load_lexicon
         import consoleLog
         consoleLog.default.oStream = sopen('/dev/null', 'w')
         load_lexicon.load_lexicon()
         add_syllabus.add_all_syllabi()
         models.Syllabus.validate()
-
-# vim: ts=4 sw=4 sts=4 et tw=78:

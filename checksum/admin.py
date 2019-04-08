@@ -13,7 +13,7 @@ Admin interface for the checksum app.
 
 from django.contrib import admin
 
-import models
+from checksum import models
 
 
 class ChecksumAdmin(admin.ModelAdmin):
@@ -21,5 +21,3 @@ class ChecksumAdmin(admin.ModelAdmin):
 
 
 admin.site.register(models.Checksum, ChecksumAdmin)
-
-# vim: ts=4 sw=4 sts=4 et tw=78:

@@ -27,9 +27,9 @@ def dump_errors(output_file):
     ostream = sopen(output_file, 'w')
     fields = ['item', 'item_type', 'question_type', 'user_answer',
             'correct_answer']
-    for i in xrange(settings.N_DISTRACTORS - 1):
+    for i in range(settings.N_DISTRACTORS - 1):
         fields.append('other_distractor_%d' % (i + 1))
-    print >> ostream, '#' + ','.join(fields)
+    print('#' + ','.join(fields), file=ostream)
     writer = csv.writer(ostream)
     
     for response in models.MultipleChoiceResponse.objects.filter(

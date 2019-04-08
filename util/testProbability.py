@@ -12,15 +12,16 @@ import os
 import unittest
 import tempfile
 
-from cjktools.common import sopen
+# from cjktools.common import sopen
 
-from kanji_tester.util import probability
+from util import probability
 
-def suite():
-    testSuite = unittest.TestSuite((
-            unittest.makeSuite(CondFreqDistTest),
-        ))
-    return testSuite
+# def suite():
+#     testSuite = unittest.TestSuite((
+#             unittest.makeSuite(CondFreqDistTest),
+#         ))
+#     return testSuite
+
 
 class CondFreqDistTest(unittest.TestCase):
     def setUp(self):
@@ -28,18 +29,18 @@ class CondFreqDistTest(unittest.TestCase):
     
     def test_from_packed_file(self):
         test_filename = tempfile.mktemp()
-        o_stream = sopen(test_filename, 'w')
-        print >> o_stream, 'dog bark:9,pee:1'
-        print >> o_stream, 'cat meow:10'
+        o_stream = open(test_filename, 'w')
+        print('dog bark:9,pee:1', file=o_stream)
+        print('cat meow:10', file=o_stream)
         o_stream.close()
         self._check_file(test_filename, 'packed')
 
     def test_from_row_file(self):
         test_filename = tempfile.mktemp()
-        o_stream = sopen(test_filename, 'w')
-        print >> o_stream, 'dog bark 9'
-        print >> o_stream, 'dog pee 1'
-        print >> o_stream, 'cat meow 10'
+        o_stream = open(test_filename, 'w')
+        print('dog bark 9', file=o_stream)
+        print('dog pee 1', file=o_stream)
+        print('cat meow 10', file=o_stream)
         o_stream.close()
         self._check_file(test_filename, 'row')
         
@@ -47,9 +48,9 @@ class CondFreqDistTest(unittest.TestCase):
         try:
             cond_dist = probability.ConditionalFreqDist.from_file(
                     filename, format=format)
-            self.assertEqual(set(cond_dist.conditions()), set(['dog', 'cat']))
+            self.assertEqual(set(cond_dist.conditions()), {'dog', 'cat'})
             self.assertEqual(set(cond_dist['dog'].samples()),
-                    set(['bark', 'pee']))
+                             {'bark', 'pee'})
             self.assertEqual(cond_dist['dog']['bark'], 9)
             self.assertEqual(cond_dist['dog']['pee'], 1)
             self.assertEqual(cond_dist['cat']['meow'], 10)
@@ -58,5 +59,5 @@ class CondFreqDistTest(unittest.TestCase):
                 os.remove(filename)
             raise        
 
-if __name__ == '__main__':
-    unittest.main()
+# if __name__ == '__main__':
+#     unittest.main()

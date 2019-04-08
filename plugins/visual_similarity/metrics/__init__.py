@@ -7,8 +7,8 @@
 #  Copyright 2008 Lars Yencken. All rights reserved.
 # 
 
-import stroke
-
-metric_library = {
-        'stroke edit distance':     stroke.StrokeEditDistance(),
-}
+# import stroke
+#
+# metric_library = {
+#         'stroke edit distance':     stroke.StrokeEditDistance(),
+# }

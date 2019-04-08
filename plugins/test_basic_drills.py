@@ -16,12 +16,13 @@ from user_model import models
 from plugins import basic_drills
 from lexicon.models import LexemeReading
 
-def suite():
-    testSuite = unittest.TestSuite((
-            unittest.makeSuite(ReadingQuestionTest),
-            unittest.makeSuite(SurfaceQuestionTest),
-        ))
-    return testSuite
+# def suite():
+#     testSuite = unittest.TestSuite((
+#             unittest.makeSuite(ReadingQuestionTest),
+#             unittest.makeSuite(SurfaceQuestionTest),
+#         ))
+#     return testSuite
+
 
 class ReadingQuestionTest(unittest.TestCase):
     def setUp(self):
@@ -47,7 +48,7 @@ class ReadingQuestionTest(unittest.TestCase):
                                                         syllabus=self.syllabus)
         real_readings = set(o.reading for o in \
                 partial_kanji.kanji.reading_set.all())
-        for i in xrange(100):
+        for i in range(100):
             question = self.factory.get_kanji_question(partial_kanji,
                     self.user)
             distractor_values = set(o.value for o in \
@@ -71,7 +72,7 @@ class ReadingQuestionTest(unittest.TestCase):
 
         for partial_lexeme in models.PartialLexeme.objects.filter(
                 surface_set__surface=u'家', syllabus=self.syllabus):
-            for i in xrange(50):
+            for i in range(50):
                 question = self.factory.get_question(partial_lexeme,
                         self.user)
                 distractor_values = set(o.value for o in \
@@ -86,6 +87,7 @@ class ReadingQuestionTest(unittest.TestCase):
 
     def tearDown(self):
         pass
+
 
 class SurfaceQuestionTest(unittest.TestCase):
     def setUp(self):
@@ -116,11 +118,6 @@ class SurfaceQuestionTest(unittest.TestCase):
     def tearDown(self):
         pass
 
-#----------------------------------------------------------------------------#
 
-if __name__ == "__main__":
-    unittest.TextTestRunner(verbosity=1).run(suite())
-
-#----------------------------------------------------------------------------#
-
-# vim: ts=4 sw=4 sts=4 et tw=78:
+# if __name__ == "__main__":
+#     unittest.TextTestRunner(verbosity=1).run(suite())

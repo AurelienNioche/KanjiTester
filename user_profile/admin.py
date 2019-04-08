@@ -18,6 +18,3 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 
 admin.site.register(models.UserProfile, UserProfileAdmin)
-
-# vim: ts=4 sw=4 sts=4 et tw=78:
-

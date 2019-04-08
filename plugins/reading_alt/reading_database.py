@@ -23,9 +23,9 @@ import consoleLog
 from checksum.models import Checksum
 
 from lexicon.models import Kanji
-from hierarchy.tree import TreeNode
-import reading_model
-import alternation_model
+from . hierarchy.tree import TreeNode
+from . import reading_model
+from . import alternation_model
 
 
 _dependencies = [__file__, reading_model, alternation_model]
@@ -139,7 +139,7 @@ class ReadingDatabase(object):
         root_node.left_visit = i
         i += 1
 
-        for child in root_node.children.itervalues():
+        for child in root_node.children.values():
             i = cls._number_tree(child, i)
 
         root_node.right_visit = i
@@ -219,7 +219,7 @@ class ReadingDatabase(object):
     def _store_kanji_readings(alt_tree):
         "Stores a separate table of only leaf-node readings."
         def iter_results(tree):
-            for kanji_node in tree.children.itervalues():
+            for kanji_node in tree.children.values():
                 kanji = kanji_node.label
 
                 reading_map = {}
@@ -237,9 +237,9 @@ class ReadingDatabase(object):
                     # No readings for this kanji
                     continue
 
-                total = sum(r['pdf'] for r in reading_map.itervalues())
+                total = sum(r['pdf'] for r in reading_map.values())
                 cdf = 0.0
-                for reading, entry in reading_map.iteritems():
+                for reading, entry in reading_map.items():
                     pdf = entry['pdf'] / total
                     cdf += pdf
                     yield (kanji, reading, ''.join(sorted(entry['codes'])),

@@ -13,7 +13,7 @@ import random
 from django import forms
 from django.utils.safestring import mark_safe
 from django.utils.html import escape
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils import timezone
 
 from . import models
@@ -25,11 +25,11 @@ class QuestionField(forms.ChoiceField):
         random.shuffle(options)
         super(QuestionField, self).__init__(
                 choices=tuple([
-                        (unicode(opt.id), unicode(opt.value))\
+                        (str(opt.id), str(opt.value))\
                         for opt in options
                     ]),
                 widget=forms.RadioSelect,
-                help_text=question.instructions(),
+                help_text=question.instructions,
                 label=question.stimulus,
             )
 
@@ -73,7 +73,7 @@ class TestSetForm(forms.Form):
         chosen_option_ids = set()
         question_ids = []
         user_responses = {}
-        for key, value in self.cleaned_data.iteritems():
+        for key, value in self.cleaned_data.items():
             if not key.startswith('question_'):
                 continue
             option_id = int(value)
@@ -153,13 +153,13 @@ class TestSetForm(forms.Form):
 
             if bf.is_hidden:
                 if bf_errors:
-                    top_errors.extend([u'(Hidden field %s) %s' % (name, force_unicode(e)) for e in bf_errors])
-                hidden_fields.append(unicode(bf))
+                    top_errors.extend([u'(Hidden field %s) %s' % (name, force_text(e)) for e in bf_errors])
+                hidden_fields.append(str(bf))
             else:
                 if errors_on_separate_row and bf_errors:
-                    output.append(error_row % force_unicode(bf_errors))
+                    output.append(error_row % force_text(bf_errors))
                 if bf.label:
-                    label = escape(force_unicode(bf.label))
+                    label = escape(force_text(bf.label))
                     # Only add the suffix if the label does not end in
                     # punctuation.
                     if self.label_suffix:
@@ -169,12 +169,12 @@ class TestSetForm(forms.Form):
                 else:
                     label = ''
                 if field.help_text:
-                    help_text = help_text_html % force_unicode(field.help_text)
+                    help_text = help_text_html % force_text(field.help_text)
                 else:
                     help_text = u''
 
                 # Custom code for testing field correctness
-                field_output = unicode(bf)
+                field_output = str(bf)
                 if hasattr(field, 'is_correct'):
                     template = (field.is_correct and correct_row or incorrect_row)
                     field_output = re.sub(
@@ -186,7 +186,7 @@ class TestSetForm(forms.Form):
                 else:
                     template = normal_row
 
-                errors = force_unicode(bf_errors)
+                errors = force_text(bf_errors)
                 if "This field is required." in errors:
                     had_unanswered_questions = True
                     
@@ -196,7 +196,7 @@ class TestSetForm(forms.Form):
                     )
                 output.append(template % {
                             'errors': errors,
-                            'label': force_unicode(label),
+                            'label': force_text(label),
                             'field': field_output,
                             'help_text': help_text
                         })
@@ -206,7 +206,7 @@ class TestSetForm(forms.Form):
                           u"You forgot to answer one or more questions. "
                           u"Please answer them before continuing.")
         if top_errors:
-            output.insert(0, error_row % force_unicode(top_errors))
+            output.insert(0, error_row % force_text(top_errors))
         if hidden_fields:  # Insert any hidden fields in the last row.
             str_hidden = u''.join(hidden_fields)
             if output:

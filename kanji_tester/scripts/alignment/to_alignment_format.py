@@ -12,18 +12,19 @@
 Converts a syllabus file to alignment format, pruning any non-kanji entries.
 """
 
-import sys, optparse
+import sys
+import optparse
 
 from cjktools.common import sopen
 
-import align_core
+import kanji_tester.scripts.alignment.align_core as align_core
 
 
 def to_alignment_format(syllabus_name, output_file):
     o_stream = sopen(output_file, 'w')
     for word in align_core.iter_words(syllabus_name):
         if word.reading and word.has_kanji():
-            print >> o_stream, word.surface, word.reading
+            print(word.surface, word.reading, file=o_stream)
     o_stream.close()
 
 

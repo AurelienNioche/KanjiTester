@@ -10,7 +10,8 @@
 
 from __future__ import with_statement
 
-import sys, optparse
+import sys
+import optparse
 from consoleLog import default as _log
 from consoleLog import withProgress
 import json
@@ -56,7 +57,7 @@ def _dump_users(filename):
                         ]),
                         'syllabus': user_profile.syllabus.tag,
                     }
-            print >> ostream, json.dumps(record)
+            print(json.dumps(record), file=ostream)
 
 
 def _dump_responses(filename):
@@ -83,7 +84,7 @@ def _dump_responses(filename):
                         'correct_response': question.multiplechoicequestion.options.get(is_correct=True).value,
                         'user_response': response.option.value,
                     }
-                print >> ostream, json.dumps(record)
+                print(json.dumps(record), file=ostream)
 
 
 def _create_option_parser():

@@ -11,7 +11,8 @@
 
 from os.path import join
 
-from cjktools.common import sopen
+import gzip
+# from cjktools.common import sopen
 from cjktools import scripts
 from django.conf import settings
 
@@ -30,7 +31,7 @@ class RawReadingModel(ConditionalFreqDist):
         ConditionalFreqDist.__init__(self)
 
         kanji_script = scripts.Script.Kanji
-        i_stream = sopen(_edict_aligned_file, 'r')
+        i_stream = gzip.open(_edict_aligned_file, 'rt')
         for line in i_stream:
             alignment = Alignment.from_line(line)
             for (g, p) in alignment:

@@ -13,7 +13,7 @@ Custom authentication decorators.
 
 from django import http
 from django.template import RequestContext, loader
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 
 def staff_only(view_f):

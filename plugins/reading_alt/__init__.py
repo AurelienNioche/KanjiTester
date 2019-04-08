@@ -100,7 +100,7 @@
 #                 condition=condition))
 #             exclude_set.update(sub_dist.keys())
 #             n_needed = settings.MIN_TOTAL_DISTRACTORS - n_stored
-#             min_prob = min(sub_dist.itervalues()) / 2
+#             min_prob = min(sub_dist.values()) / 2
 #             while n_needed > 0:
 #                 for row in lexicon_models.KanjiReadingProb.sample_n(n_needed):
 #                     if row.symbol not in exclude_set:

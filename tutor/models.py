@@ -7,5 +7,5 @@
 #  Copyright 2008-06-13 Lars Yencken. All rights reserved.
 # 
 
-from django.db import models
+# from django.db import models
 

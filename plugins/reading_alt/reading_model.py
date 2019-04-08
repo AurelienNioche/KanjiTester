@@ -13,11 +13,11 @@ from os.path import join
 import math
 
 from django.conf import settings
-from cjktools.common import sopen
+# from cjktools.common import sopen
 from cjktools import scripts
 
 from util.probability import ConditionalFreqDist
-import raw_reading_model
+from plugins.reading_alt import raw_reading_model
 
 
 _reading_counts_file = join(
@@ -81,7 +81,9 @@ class VoicingAndGeminationModel(object):
         return result
 
     def log_prob(self, grapheme, reading, alt_reading):
-        return math.log(self.prob(grapheme, reading, alt_reading))
+
+        p = self.prob(grapheme, reading, alt_reading)
+        return math.log(p)
 
     def candidates(self, grapheme, reading):
         """
@@ -114,16 +116,16 @@ class VoicingAndGeminationModel(object):
 
         # Get the canonical reading pairs.
         for grapheme, reading, count in self.normalized_freq_dist.itercounts():
-            if not reverse_mapping.has_key(reading):
+            if not reading in reverse_mapping:
                 reverse_mapping[reading] = {grapheme}
             else:
                 reverse_mapping[reading].add(grapheme)
 
         # Get the alternation reading pairs.
         for (grapheme, reading), alt_readings in \
-                self.from_canonical_reading.iteritems():
+                self.from_canonical_reading.items():
             for alt_reading in alt_readings:
-                if not reverse_mapping.has_key(alt_reading):
+                if not alt_reading in reverse_mapping:
                     reverse_mapping[alt_reading] = {grapheme}
                 else:
                     reverse_mapping[alt_reading].add(grapheme)
@@ -135,7 +137,7 @@ class VoicingAndGeminationModel(object):
         Returns a set of readings which are valid for a segment.
         """
         valid_readings = set()
-        for alt_readings in self.from_canonical_reading.itervalues():
+        for alt_readings in self.from_canonical_reading.values():
             valid_readings.update(alt_readings)
 
         return valid_readings
@@ -146,7 +148,7 @@ class VoicingAndGeminationModel(object):
         distribution gives P(r|r*).
         """
         alternation_dist = ConditionalFreqDist()
-        i_stream = sopen(_reading_counts_map_file, 'r')
+        i_stream = open(_reading_counts_map_file, 'r')
         for line in i_stream:
             line = line.rstrip().split()
             line.pop(0)
@@ -173,7 +175,7 @@ class VoicingAndGeminationModel(object):
         """
         # Generate an alternation distribution.
         from_canonical_reading = {}
-        i_stream = sopen(_reading_counts_map_file, 'r')
+        i_stream = open(_reading_counts_map_file, 'r')
         for line in i_stream:
             line = line.rstrip().split()
             kanji = line.pop(0)
@@ -187,8 +189,7 @@ class VoicingAndGeminationModel(object):
                 elif len(lineSeg) == 3:
                     reading, alt_reading, count = lineSeg
                 else:
-                    raise Exception, "File %s is badly formatted" % \
-                            _reading_counts_map_file
+                    raise Exception("File %s is badly formatted" % _reading_counts_map_file)
 
                 key = (kanji, reading)
                 if key in from_canonical_reading:

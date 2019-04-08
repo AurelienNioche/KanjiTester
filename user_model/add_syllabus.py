@@ -11,7 +11,7 @@
 import sys
 import optparse
 
-from cjktools.common import sopen
+# from cjktools.common import sopen
 from cjktools import scripts
 from cjktools import alternations
 import consoleLog
@@ -21,7 +21,7 @@ from checksum.models import Checksum
 from lexicon import models as lexicon_models
 from user_model import models as usermodel_models, plugin_api
 
-import bundle
+from user_model import bundle
 
 _log = consoleLog.default
 
@@ -206,14 +206,13 @@ def _store_words(syllabus, syllabus_bundle):
         partial_lexeme = _find_in_lexicon(word, skipped_words, syllabus)
         if partial_lexeme:
             n_ok += 1
-    _log.log('%d ok, %d skipped (see skipped.log)' % (n_ok,
-            len(skipped_words)))
+    _log.log('%d ok, %d skipped (see skipped.log)' % (n_ok, len(skipped_words)))
 
-    o_stream = sopen('skipped.log', 'w')
+    o_stream = open('skipped.log', 'w')
     vim_header = "# vim: set ts=20 noet sts=20:"
-    print >> o_stream, vim_header
+    print(vim_header, file=o_stream)
     for word, reason in skipped_words:
-        print >> o_stream, '%s\t%s' % (word.to_line(), reason)
+        print('%s\t%s' % (word.to_line(), reason), file=o_stream)
     o_stream.close()
     _log.finish()
 
@@ -246,8 +245,8 @@ def _prune_readings(known_readings, syllabus):
         valid_readings = partial_kanji.kanji.reading_set
 
         # Try to save all the matched readings in bulk
-        partial_kanji.reading_set = valid_readings.filter(
-                reading__in=known_readings.get(kanji, []))
+        partial_kanji.reading_set.set(valid_readings.filter(
+                reading__in=known_readings.get(kanji, [])))
         if partial_kanji.reading_set.count() > 0:
             continue
 
@@ -277,8 +276,7 @@ def _get_kanji_readings(alignments):
     readings = {}
     for alignment in alignments:
         alignment_len = len(alignment)
-        for i, (g_seg, p_seg) in enumerate(zip(alignment.g_segs,
-                    alignment.p_segs)):
+        for i, (g_seg, p_seg) in enumerate(zip(alignment.g_segs, alignment.p_segs)):
             if len(g_seg) > 1 or scripts.script_types(g_seg) != kanji_script:
                 continue
             reading_set = readings.setdefault(g_seg, set())

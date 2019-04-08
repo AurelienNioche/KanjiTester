@@ -14,7 +14,7 @@ Models for the reading_alt app.
 from django.db import models
 from django.conf import settings
 
-from hierarchy.models import HierarchicalModel
+from plugins.reading_alt.hierarchy.models import HierarchicalModel
 from util.models import CondProb
 
 ALTERNATION_TYPES = (
@@ -35,8 +35,7 @@ class ReadingAlternation(HierarchicalModel):
     """A single reading alternation step."""
 
     # The surface reading form we index by.
-    value = models.CharField(max_length=settings.MAX_READING_LENGTH * \
-            settings.UTF8_BYTES_PER_CHAR)
+    value = models.CharField(max_length=settings.MAX_READING_LENGTH * settings.UTF8_BYTES_PER_CHAR)
 
     # The type of alternation which occurred.
     code = models.CharField(max_length=1, choices=ALTERNATION_TYPES)
@@ -66,7 +65,9 @@ class KanjiReading(CondProb):
 
     reading_alternation = models.ForeignKey(
         ReadingAlternation, blank=True,
-        null=True, help_text='The final alternation step which provided this reading.')
+        null=True, help_text='The final alternation step which provided this reading.',
+        on_delete=models.CASCADE
+    )
 
     def __unicode__(self):
         return u'%s /%s/ (%s)' % (self.condition, self.symbol, self.alternations)

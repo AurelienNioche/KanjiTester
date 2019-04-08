@@ -11,9 +11,11 @@
 from os import path
 from xml.etree import cElementTree as ElementTree
 
+import gzip
+
 from django.db import connection
 from simplestats.sequences import groups_of_n_iter
-from cjktools.common import sopen
+# from cjktools.common import sopen
 from cjktools import scripts
 import consoleLog
 from checksum.models import Checksum
@@ -40,7 +42,7 @@ def load_lexicon(filename=_jmdict_path):
     log.start('Loading JMdict', nSteps=2)
     _clear_lexicon()
     log.log('Reading from %s' % path.basename(filename))
-    iStream = sopen(filename, 'r', 'byte')
+    iStream = gzip.open(filename, 'rt')
     data = iStream.read()
     iStream.close()
     log.log('Parsing XML tree')
@@ -82,14 +84,14 @@ def _populate_stacks(lexeme_node, lexeme_id, lexeme_surface_stack,
     sense_list = lexeme_node.findall('sense')
 
     if not (reading_list and sense_list):
-        print "Warning: lexeme is missing crucial data"
+        print("Warning: lexeme is missing crucial data")
         return
 
     # If we have no kanji, the kana becomes the surface form
     if not surface_set:
         surface_set = set(reading_list)
 
-    in_lexicon = True # All these surfaces are from the original lexicon
+    in_lexicon = True  # All these surfaces are from the original lexicon
     for surface in sorted(surface_set):
         lexeme_surface_stack.append((
                 lexeme_id,
@@ -138,7 +140,7 @@ def _store_lexemes(lexeme_nodes):
     max_rows = settings.N_ROWS_PER_INSERT
 
     log.log('Storing to lexicon_lexeme')
-    for lexeme_rows in groups_of_n_iter(max_rows, xrange(1, next_lexeme_id)):
+    for lexeme_rows in groups_of_n_iter(max_rows, range(1, next_lexeme_id)):
         cursor.executemany('INSERT INTO lexicon_lexeme (id) VALUES (%s)', [(i, ) for i in lexeme_rows])
 
     log.log('Storing to lexicon_lexemesurface')

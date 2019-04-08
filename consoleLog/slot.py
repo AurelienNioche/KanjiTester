@@ -7,9 +7,6 @@
 #  Copyright 2010 Lars Yencken. All rights reserved.
 #
 
-"""
-"""
-
 import sys
 
 import consoleLog.shellColor as shellColor

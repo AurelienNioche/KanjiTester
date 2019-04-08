@@ -27,7 +27,7 @@ class QuestionTest(TestCase):
     def test_word_question(self):
         user = User.objects.get(username='dummy')
         word = user.get_profile().syllabus.partiallexeme_set.all()[0]
-        assert isinstance(word.surface_set.all()[0].surface, unicode)
+        assert isinstance(word.surface_set.all()[0].surface, str)
         self.factory.get_question(word, user)
 
     def test_kanji_question(self):

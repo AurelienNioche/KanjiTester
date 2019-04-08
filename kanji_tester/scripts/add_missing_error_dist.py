@@ -31,14 +31,14 @@ for user in models.User.objects.all():
     else:
         n_ok += 1
 
-print '%d ok' % n_ok
-print '%d without profile' % n_no_profile
-print '%d missing error dist' % len(bad_users)
+print('%d ok' % n_ok)
+print('%d without profile' % n_no_profile)
+print('%d missing error dist' % len(bad_users))
 
-print 
-print 'Fixing bad profiles...'
+print()
+print('Fixing bad profiles...')
 for user in bad_users:
     sys.stdout.write(user.username + '... ')
     sys.stdout.flush()
     models.ErrorDist.init_from_priors(user)
-    print 'ok'
+    print('ok')

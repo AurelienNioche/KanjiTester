@@ -7,8 +7,6 @@
 #  Copyright 2008-06-13 Lars Yencken. All rights reserved.
 # 
 
-
-
 from django.shortcuts import render
 from django.conf import settings
 from django.utils import timezone

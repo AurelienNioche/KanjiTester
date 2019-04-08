@@ -48,7 +48,7 @@ def _check_syllabus(syllabus):
         last_cases = problems_by_alignment.setdefault(alignment, list())
         last_cases.append((g_seg, p_seg))
     
-    for alignment, cases in sorted(problems_by_alignment.iteritems()):
+    for alignment, cases in sorted(problems_by_alignment.items()):
         _log.start(alignment, nSteps=len(cases))
         for g_seg, p_seg in cases:
             _log.log(u'No match for %s /%s/' % (g_seg, p_seg))

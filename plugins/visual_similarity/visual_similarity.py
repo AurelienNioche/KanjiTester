@@ -21,10 +21,10 @@ from drill import plugin_api as drill_api, support
 from lexicon import models as lexicon_models
 from kanji_tester import settings
 
-import plugins.visual_similarity.metrics as metrics
+from plugins.visual_similarity.metrics.stroke import StrokeEditDistance
 import plugins.visual_similarity.threshold_graph as threshold_graph
 
-_default_metric_name = 'stroke edit distance'
+# _default_metric_name = 'stroke edit distance'
 _log = consoleLog.default
 
 
@@ -57,11 +57,10 @@ class VisualSimilarity(user_model_api.SegmentedSeqPlugin):
         _log.finish()
 
     def _build_graph(self, kanji_set):
-        metric = metrics.metric_library[_default_metric_name]
+        metric = StrokeEditDistance()  # metrics.strmetric_library[_default_metric_name]
         graph = threshold_graph.ThresholdGraph(settings.MAX_GRAPH_DEGREE)
         ignore_set = set()
-        for kanji_a, kanji_b in consoleLog.withProgress(
-                iunique_pairs(kanji_set), 100):
+        for kanji_a, kanji_b in consoleLog.withProgress(iunique_pairs(kanji_set), 100):
             if kanji_a in ignore_set or kanji_b in ignore_set:
                 continue
 
@@ -80,7 +79,7 @@ class VisualSimilarity(user_model_api.SegmentedSeqPlugin):
         return graph
 
     def _store_graph(self, graph, prior_dist):
-        for label, edge_seq in graph._heaps.iteritems():
+        for label, edge_seq in graph._heaps.items():
             total_weight = 0.0
             for weight, neighbour_label in edge_seq:
                 total_weight += 1.0 - weight
@@ -162,4 +161,3 @@ class VisualSimilarityDrills(drill_api.MultipleChoiceFactoryI):
                              annotation_map=annotation_map)
         question.annotation = u'|'.join(segments)
         question.save()
-        return

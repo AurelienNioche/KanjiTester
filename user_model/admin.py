@@ -15,8 +15,7 @@ from user_model import models
 class PartialLexemeAdmin(admin.ModelAdmin):
     list_display = ('lexeme', 'syllabus')
     list_filter = ('syllabus',)
-    search_fields = ('lexeme__reading_set__reading',
-            'lexeme__surface_set__surface')
+    search_fields = ('lexeme__reading_set__reading', 'lexeme__surface_set__surface')
 
 
 class AlignmentAdmin(admin.ModelAdmin):

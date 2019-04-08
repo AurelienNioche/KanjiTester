@@ -7,4 +7,4 @@
 #  Copyright 2008 Lars Yencken. All rights reserved.
 # 
 
-import nltk as _requires_nltk
+# import nltk as _requires_nltk

@@ -74,9 +74,9 @@ def tick():
 
 
 class ProgressBar:
-    "A progress bar which gets printed to stdout."
+    """A progress bar which gets printed to stdout."""
     def __init__(self, stringSize=20):
-        "Creates a new instance, setting the size as needed."
+        """Creates a new instance, setting the size as needed."""
         self._slot = slot.Slot()
         self._stringSize = stringSize
         self._count = 0
@@ -90,7 +90,7 @@ class ProgressBar:
         return
 
     def reset(self):
-        "Resets the progress bar to initial conditions."
+        """Resets the progress bar to initial conditions."""
         self._count = 0
         self._totalCount = None
         self._lastLineSize = None
@@ -128,9 +128,9 @@ class ProgressBar:
         if count < 0 or count > self._totalCount:
             raise (Exception, 'Bad count for progress bar')
 
-        n = (count * self._stringSize) / self._totalCount
-        percent = (100*count) / self._totalCount
-        m = self._stringSize - n - 1 # subtract one for the rotating char
+        n = int((count * self._stringSize) / self._totalCount)
+        percent = int((100*count) / self._totalCount)
+        m = self._stringSize - n - 1  # subtract one for the rotating char
 
         self._lastRotation = (self._lastRotation + 1) % self._numRotations
         if percent < 100:
@@ -148,7 +148,7 @@ class ProgressBar:
 
     def fractional(self, fraction):
         "Set a fractional percentage completion, e.g. 0.3333 -> 33%."
-        assert fraction >= 0 and fraction <= 1
+        assert 0 <= fraction <= 1
         self.update(int(fraction * self._totalCount))
     
     def finish(self):

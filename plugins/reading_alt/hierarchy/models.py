@@ -15,6 +15,10 @@ from django.db import models
 from django.db import connection
 
 
+from functools import total_ordering
+
+
+@total_ordering
 class HierarchicalModel(models.Model):
     """A generic hierarchical database model."""
 
@@ -42,7 +46,7 @@ class HierarchicalModel(models.Model):
 
     def add_child(self, **kwargs):
         cls = self.__class__
-        parent_left_visit = self.left_visit
+        # parent_left_visit = self.left_visit
         parent_right_visit = self.right_visit
 
         cursor = connection.cursor()
@@ -63,8 +67,13 @@ class HierarchicalModel(models.Model):
         self.right_visit += 2
         return new_node
 
-    def __cmp__(self, rhs):
-        return cmp(self.left_visit, self.right_visit)
+    def __lt__(self, other):
+        return self.left_visit < self.right_visit
+
+    def __eq__(self, other):
+        return self.left_visit == self.right_visit
+    # def __cmp__(self, rhs):
+    #     return cmp(self.left_visit, self.right_visit)
 
     def leaves(self):
         """Returns all leaf nodes under this node."""

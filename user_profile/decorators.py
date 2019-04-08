@@ -8,7 +8,7 @@
 #
 
 from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 
 def profile_required(view_method):
@@ -18,7 +18,7 @@ def profile_required(view_method):
     """
     def maybe_redirect(request):
         user = request.user
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return HttpResponseRedirect(reverse("tutor_welcome")) 
 
         # print hasattr(user, 'profile')

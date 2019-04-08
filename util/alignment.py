@@ -11,17 +11,21 @@
 Resouces for parsing and utilising alignments.
 """
 
-from itertools import izip
+# from itertools import zip
 
-from cjktools.common import sopen
+# from cjktools.common import sopen
 from cjktools.scripts import contains_script, Script
 
-class FormatError(Exception): pass
 
-_gp_sep = u':'
-_seg_sep = u'|'
+class FormatError(Exception):
+    pass
 
-class Alignment(object):
+
+_gp_sep = ':'
+_seg_sep = '|'
+
+
+class Alignment:
     __slots__ = ('g_segs', 'p_segs')
 
     def __init__(self, g_segs, p_segs):
@@ -31,13 +35,13 @@ class Alignment(object):
         self.g_segs = g_segs
         self.p_segs = p_segs
 
+    @property
     def grapheme(self):
         return u''.join(self.g_segs)
-    grapheme = property(grapheme)
 
+    @property
     def phoneme(self):
         return u''.join(self.p_segs)
-    phoneme = property(phoneme)
 
     def has_kanji(self):
         return contains_script(Script.Kanji, self.grapheme)
@@ -46,10 +50,13 @@ class Alignment(object):
         return len(self.g_segs)
 
     def __iter__(self):
-        for item in izip(self.g_segs, self.p_segs):
+        for item in zip(self.g_segs, self.p_segs):
             yield item
 
-    def __unicode__(self):
+    def __next__(self):
+        return self
+
+    def __str__(self):
         return ' '.join(
                 [_seg_sep.join(self.g_segs), _seg_sep.join(self.p_segs)],
             )
@@ -69,13 +76,10 @@ class Alignment(object):
         return _gp_sep.join([self.entry_form(), self.short_form()])
 
     def entry_form(self):
-        return u'%s %s' % (self.grapheme, self.phoneme)
+        return f'{self.grapheme} {self.phoneme}'
 
     def short_form(self):
-        return u'%s %s' % (
-                _seg_sep.join(self.g_segs),
-                _seg_sep.join(self.p_segs),
-            )
+        return f'{_seg_sep.join(self.g_segs)} {_seg_sep.join(self.p_segs)}'
 
     @classmethod
     def from_short_form(cls, short_alignment):
@@ -84,11 +88,12 @@ class Alignment(object):
         p_segs = p_segs.split(_seg_sep)
         return Alignment(g_segs, p_segs)
 
-class AlignedFile(object):
+
+class AlignedFile:
     def __init__(self, filename):
         self._alignments = []
 
-        i_stream = sopen(filename)
+        i_stream = open(filename, 'r')
         for i, line in enumerate(i_stream):
             if line.lstrip().startswith('#'):
                 continue
@@ -98,10 +103,11 @@ class AlignedFile(object):
                 raise FormatError('on line %d of %s' % (i + 1, filename))
         i_stream.close()
 
+    def __next__(self):
+        return self
+
     def __iter__(self):
         return iter(self._alignments)
 
     def __len__(self):
         return len(self._alignments)
-
-# vim: ts=4 sw=4 sts=4 et tw=78:

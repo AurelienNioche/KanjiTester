@@ -10,7 +10,8 @@
 import random
 
 from nltk import probability as nltk_prob
-from cjktools.common import sopen
+# from cjktools.common import sopen
+import gzip
 
 
 class FreqDist(nltk_prob.FreqDist):
@@ -28,6 +29,11 @@ class FreqDist(nltk_prob.FreqDist):
     >>> abs(x.freq('b') - 0.2) < 1e-6
     True
     """
+
+    @classmethod
+    def fromkeys(cls, iterable, v=None):
+        super().fromkeys(iterable, v)
+
     def dec(self, key, n=1):
         self[key] -= n
         self._N -= n
@@ -39,7 +45,7 @@ class FreqDist(nltk_prob.FreqDist):
     @staticmethod
     def from_file(filename):
         dist = FreqDist()
-        i_stream = sopen(filename)
+        i_stream = gzip.open(filename, 'rt')
         for line in i_stream:
             symbol, count = line.rstrip().split()
             dist[symbol] += int(count)  # dist.inc(symbol, int(count))
@@ -47,13 +53,13 @@ class FreqDist(nltk_prob.FreqDist):
         return dist
     
     def to_file(self, filename):
-        o_stream = sopen(filename, 'w')
+        o_stream = open(filename, 'w')
         for sample in self.samples():
             count = self[sample]
-            sample = unicode(sample)
+            sample = str(sample)
             if len(sample.split()) > 1:
                 raise ValueError('sample contains whitespace')
-            print >> o_stream, u'%s %d' % (sample, count)
+            print(u'%s %d' % (sample, count), file=o_stream)
         o_stream.close()
         return
 
@@ -87,7 +93,12 @@ class ConditionalFreqDist(nltk_prob.ConditionalFreqDist):
         Loads a distribution from a row_format file.
         """
         dist = ConditionalFreqDist()
-        i_stream = sopen(filename)
+
+        if filename[-3:] == '.gz':
+            i_stream = gzip.open(filename, 'rt')
+        else:
+            i_stream = open(filename, 'r')
+
         for line in i_stream:
             condition, symbol, count = line.rstrip().split()
             count = int(count)
@@ -104,11 +115,11 @@ class ConditionalFreqDist(nltk_prob.ConditionalFreqDist):
         conditionA symA:1,symB:10
         """
         dist = ConditionalFreqDist()
-        i_stream = sopen(filename)
+        i_stream = open(filename, 'r')
         for line in i_stream:
             condition, symbol_counts = line.split()
-            for symbol_count in symbol_counts.split(','):
-                symbol, count_str = symbol_count.split(':')
+            for symbol_count in symbol_counts.split(","):
+                symbol, count_str = symbol_count.split(":")
                 count = int(count_str)
                 dist[condition][symbol] += count  # dist[condition].inc(symbol, count)
         i_stream.close()
@@ -116,12 +127,12 @@ class ConditionalFreqDist(nltk_prob.ConditionalFreqDist):
     
     def to_file(self, filename):
         """Stores the distribution to a file."""
-        o_stream = sopen(filename, 'w')
+        o_stream = open(filename, 'w')
         for condition in self.conditions():
             cond_dist = self[condition]
             for sample in cond_dist.samples():
                 count = cond_dist[sample]
-                print >> o_stream, u'%s %s %d' % (condition, sample, count)
+                print(u'%s %s %d' % (condition, sample, count), file=o_stream)
         o_stream.close()
         return
     
@@ -153,7 +164,8 @@ class UnsupportedMethodError(Exception):
     pass
 
 
-class AbstractMethod(Exception): pass
+class AbstractMethod(Exception):
+    pass
 
 
 # XXX Doesn't match NLTK interface.
@@ -200,7 +212,7 @@ class ProbDist(dict):
         return set(self.items()) == set(rhs.items())
 
     def normalise(self):
-        total = sum(self.itervalues())
+        total = sum(self.values())
         for key in self:
             self[key] /= total
         self._refresh_cdf()
@@ -208,7 +220,7 @@ class ProbDist(dict):
     def save_to(self, manager, **kwargs):
         manager.filter(**kwargs).delete()
         cdf = 0.0
-        for symbol, pdf in self.iteritems():
+        for symbol, pdf in self.items():
             row_kwargs = {}
             row_kwargs.update(kwargs)
             cdf += pdf
@@ -239,7 +251,8 @@ class ProbDist(dict):
             return result
 
         tmp_dist = self.copy()
-        for symbol in tmp_dist.keys():
+        keys = list(tmp_dist.keys())
+        for symbol in keys:
             if symbol not in include_set:
                 del tmp_dist[symbol]
         tmp_dist.normalise()
@@ -258,7 +271,7 @@ class ProbDist(dict):
     def _refresh_cdf(self):
         cdf_seq = []
         cdf = 0.0
-        for symbol, pdf in self.iteritems():
+        for symbol, pdf in self.items():
             cdf += pdf
             cdf_seq.append((cdf, symbol))
 
@@ -284,12 +297,12 @@ class CondProbDist(dict):
         return dist
 
     def normalise(self):
-        for sub_dist in self.itervalues():
+        for sub_dist in self.values():
             sub_dist.normalise()
 
     def save_to(self, manager, **kwargs):
         manager.filter(**kwargs).delete()
-        for condition, sub_dist in self.iteritems():
+        for condition, sub_dist in self.items():
             sub_dist_kwargs = kwargs.copy()
             sub_dist_kwargs['condition'] = condition
             sub_dist.save_to(manager, **sub_dist_kwargs)
@@ -308,16 +321,16 @@ class SeqDist(ProbDist):
         for new_dist in dists:
             if isinstance(new_dist, ProbDist):
                 current = {} 
-                for old_seq, old_pdf in old_dist.iteritems():
-                    for new_symbol, new_pdf in new_dist.iteritems():
+                for old_seq, old_pdf in old_dist.items():
+                    for new_symbol, new_pdf in new_dist.items():
                         current[old_seq + (new_symbol,)] = old_pdf * new_pdf
                 old_dist = current
             else:
                 fixed_char = new_dist
-                old_dist = dict((k + (fixed_char,), v) for (k, v) in old_dist.iteritems())
+                old_dist = dict((k + (fixed_char,), v) for (k, v) in old_dist.items())
 
         self._segments = {}
-        for segments, pdf in old_dist.iteritems():
+        for segments, pdf in old_dist.items():
             flat = u''.join(segments)
             # Overwrite alternative segmentations (simplification)
             self._segments[flat] = segments

@@ -13,14 +13,15 @@ import unittest
 from django.contrib.auth.models import User
 
 from user_model import models
-from plugins import reading_alt
+from plugins.reading_alt import reading_alt
 from lexicon.models import LexemeReading
 
-def suite():
-    testSuite = unittest.TestSuite((
-            unittest.makeSuite(ReadingAltQuestionTest),
-        ))
-    return testSuite
+# def suite():
+#     testSuite = unittest.TestSuite((
+#             unittest.makeSuite(ReadingAltQuestionTest),
+#         ))
+#     return testSuite
+
 
 class ReadingAltQuestionTest(unittest.TestCase):
     def setUp(self):
@@ -50,8 +51,7 @@ class ReadingAltQuestionTest(unittest.TestCase):
 
             if partial_lexeme.alignments.count() == 0:
                 n_missing += 1
-            
-            
+
         self.assertEqual(n_missing, 0)
 
     def test_bug_325(self):
@@ -67,17 +67,14 @@ class ReadingAltQuestionTest(unittest.TestCase):
         question.delete()
 
     def test_bug_339_kanji(self):
-        "Kanji questions have a unique correct answer."
+        """Kanji questions have a unique correct answer."""
         self._init_syllabus('jlpt 3')
         partial_kanji = models.PartialKanji.objects.get(kanji__kanji=u'家',
                                                         syllabus=self.syllabus)
-        real_readings = set(o.reading for o in \
-                partial_kanji.kanji.reading_set.all())
-        for i in xrange(100):
-            question = self.factory.get_kanji_question(partial_kanji,
-                    self.user)
-            distractor_values = set(o.value for o in question.options.all() \
-                    if not o.is_correct)
+        real_readings = set(o.reading for o in partial_kanji.kanji.reading_set.all())
+        for i in range(100):
+            question = self.factory.get_kanji_question(partial_kanji, self.user)
+            distractor_values = set(o.value for o in question.options.all() if not o.is_correct)
             correct_value = question.options.get(is_correct=True).value
             assert correct_value in real_readings
             self.assertEqual(
@@ -87,7 +84,7 @@ class ReadingAltQuestionTest(unittest.TestCase):
             question.delete()
     
     def test_bug_339_words(self):
-        "Word questions have a unique correct answer."
+        """Word questions have a unique correct answer."""
         self._init_syllabus('jlpt 3')
         surface = u'家'
         # Include readings from homographs.
@@ -95,11 +92,9 @@ class ReadingAltQuestionTest(unittest.TestCase):
                 lexeme__surface_set__surface=surface))
         for partial_lexeme in models.PartialLexeme.objects.filter(
                 lexeme__surface_set__surface=surface, syllabus=self.syllabus):
-            for i in xrange(50):
-                question = self.factory.get_question(partial_lexeme,
-                        self.user)
-                distractor_values = set(o.value for o in \
-                        question.options.all() if not o.is_correct)
+            for i in range(50):
+                question = self.factory.get_question(partial_lexeme, self.user)
+                distractor_values = set(o.value for o in question.options.all() if not o.is_correct)
                 correct_value = question.options.get(is_correct=True).value
                 assert correct_value in real_readings
                 self.assertEqual(
@@ -111,11 +106,7 @@ class ReadingAltQuestionTest(unittest.TestCase):
     def tearDown(self):
         pass
 
-#----------------------------------------------------------------------------#
-
-if __name__ == "__main__":
-    unittest.TextTestRunner(verbosity=1).run(suite())
-
-#----------------------------------------------------------------------------#
-
-# vim: ts=4 sw=4 sts=4 et tw=78:
+#
+#
+# if __name__ == "__main__":
+#     unittest.TextTestRunner(verbosity=1).run(suite())

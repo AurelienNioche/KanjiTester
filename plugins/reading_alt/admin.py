@@ -9,7 +9,7 @@
 
 from django.contrib import admin
 
-import models
+from plugins.reading_alt import models
 
 
 class KanjiReadingAdmin(admin.ModelAdmin):

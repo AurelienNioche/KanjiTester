@@ -24,7 +24,7 @@ class KanjiReadingModel(usermodel_api.SegmentedSeqPlugin):
         _log.start('Building %s dist' % self.dist_name, nSteps=4)
 
         # Ensure the reading database is pre-built
-        import reading_database
+        from . import reading_database
         reading_database.ReadingDatabase.build()
 
         prior_dist, created = usermodel_models.PriorDist.objects.get_or_create(
@@ -86,10 +86,7 @@ class KanjiReadingModel(usermodel_api.SegmentedSeqPlugin):
                          prior_dist.density.all().values('condition'))
         for (condition,) in consoleLog.withProgress(conditions):
             exclude_set = set(
-                o.reading for o in \
-                lexicon_models.KanjiReading.objects.filter(
-                    kanji__kanji=condition)
-            )
+                o.reading for o in lexicon_models.KanjiReading.objects.filter(kanji__kanji=condition))
             n_stored = prior_dist.density.filter(condition=condition).exclude(
                 symbol__in=exclude_set).count()
 
@@ -97,7 +94,7 @@ class KanjiReadingModel(usermodel_api.SegmentedSeqPlugin):
                 condition=condition))
             exclude_set.update(sub_dist.keys())
             n_needed = settings.MIN_TOTAL_DISTRACTORS - n_stored
-            min_prob = min(sub_dist.itervalues()) / 2
+            min_prob = min(sub_dist.values()) / 2
             while n_needed > 0:
                 for row in lexicon_models.KanjiReadingProb.sample_n(n_needed):
                     if row.symbol not in exclude_set:

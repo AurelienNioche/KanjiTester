@@ -94,7 +94,7 @@ class Question(models.Model):
         help_text="The broad type of this question.")
     question_plugin = models.ForeignKey(
         QuestionPlugin,
-        help_text="The plugin which generated this question.")
+        help_text="The plugin which generated this question.", on_delete=models.CASCADE)
     annotation = models.CharField(
         max_length=100, null=True, blank=True,
         help_text="Scratch space for question plugin annotations.")
@@ -109,9 +109,9 @@ class Question(models.Model):
                 self.pivot,
             )
 
+    @property
     def instructions(self):
         instructions = INSTRUCTIONS[str(self.question_type)] % self.get_pivot_type_display()
-        #print(instructions)
         return instructions
         # def fget(self):
         #     return INSTRUCTIONS[self.question_type] % \
@@ -145,7 +145,8 @@ class Question(models.Model):
 class MultipleChoiceQuestion(Question):
     """A single question about a kanji or a word."""
     stimulus = models.CharField(max_length=400)
-    
+
+    @property
     def answer(self):
         # doc = "The correct answer to this question."
         return self.options.get(is_correct=True)
@@ -164,7 +165,7 @@ class MultipleChoiceQuestion(Question):
         if answer in distractor_values:
             raise ValueError('answer included in distractor set')
 
-        if len(filter(None, distractor_values)) < len(distractor_values) or \
+        if len(list(filter(None, distractor_values))) < len(distractor_values) or \
                 not answer:
             raise ValueError('all option values must be non-empty')
 
@@ -189,8 +190,7 @@ class MultipleChoiceQuestion(Question):
 class MultipleChoiceOption(models.Model):
     """A single option in a multiple choice question."""
     question = models.ForeignKey(
-        MultipleChoiceQuestion,
-        related_name='options')
+        MultipleChoiceQuestion, related_name='options', on_delete=models.CASCADE)
     value = models.CharField(max_length=200)
     is_correct = models.BooleanField(default=False)
     annotation = models.CharField(max_length=100, null=True, blank=True)
@@ -207,8 +207,8 @@ class MultipleChoiceOption(models.Model):
 
 class Response(models.Model):
     """A generic response to the user."""
-    question = models.ForeignKey(Question)
-    user = models.ForeignKey(auth_models.User)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    user = models.ForeignKey(auth_models.User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     
     class Meta:
@@ -221,7 +221,7 @@ class Response(models.Model):
 
 class MultipleChoiceResponse(Response):
     """A response to a multiple choice question."""
-    option = models.ForeignKey(MultipleChoiceOption)
+    option = models.ForeignKey(MultipleChoiceOption, on_delete=models.CASCADE)
 
     def __unicode__(self):
         return '%s (%s)' % (
@@ -242,7 +242,7 @@ class MultipleChoiceResponse(Response):
 
 
 class TestSet(models.Model):
-    user = models.ForeignKey(auth_models.User)
+    user = models.ForeignKey(auth_models.User, on_delete=models.CASCADE)
     questions = models.ManyToManyField(MultipleChoiceQuestion)
     responses = models.ManyToManyField(MultipleChoiceResponse)
     random_seed = models.IntegerField()
@@ -325,7 +325,7 @@ class TestSet(models.Model):
                     # Oh well, try again with another plugin
                     del available_plugins[i]
 
-        test_set.questions = questions
+        test_set.questions.set(questions)
         return test_set
     
     def __len__(self):
@@ -333,7 +333,7 @@ class TestSet(models.Model):
 
     @staticmethod
     def _get_plugin_set(user):
-        "Determine the set type and the plugins to use for the next test set."
+        """Determine the set type and the plugins to use for the next test set."""
         try:
             previous_set = TestSet.get_latest(user)
         except IndexError:

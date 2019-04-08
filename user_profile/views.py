@@ -16,7 +16,7 @@ from django.http import HttpResponseRedirect
 from django import forms
 from django.shortcuts import render
 # from django.template import RequestContext
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 
 from user_model import models as usermodel_models

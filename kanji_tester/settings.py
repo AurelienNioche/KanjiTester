@@ -212,6 +212,6 @@ EMAIL_PORT = 587
 
 # Overwrite any of these settings with local customizations.
 try:
-    from local_settings import *
+    from kanji_tester.local_settings import *
 except ImportError:
-    pass
+    print("No local settings has been defined. Mail sending will crash.")

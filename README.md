@@ -54,23 +54,21 @@ Compile Cython module
 * Compile the module
 
 
-    python setup.py build_ext --inplace
+    cd plugins/visual_similarity/metrics/
+    cythonize -a -i stroke.pyx
+    cd ../../../
     
     
 Install python librairies
 
 
-    pip install django numpy nltk
+    pip install django numpy nltk six django-registration
     
 
 Configure interaction of mysql with Python
 
-    brew unlink mysql
-    brew install mysql-connector-c
-    sed -i -e 's/libs="$libs -l "/libs="$libs -lmysqlclient -lssl -lcrypto"/g' /usr/local/bin/mysql_config
-    pip install MySQL-python
-    brew unlink mysql-connector-c
-    brew link --overwrite mysql
+    export PATH=$PATH:/usr/local/mysql/bin
+    pip install mysqlclient
 
 
 Prepare mysql

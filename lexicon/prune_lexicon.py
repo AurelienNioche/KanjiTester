@@ -12,7 +12,7 @@ from lexicon import models
 
 
 def main():
-    print '%d lexemes' % models.Lexeme.objects.all().count()
+    print('%d lexemes' % models.Lexeme.objects.all().count())
     n = 0
     for lexeme in models.Lexeme.objects.all():
         if lexeme.sense_set.count() == 0 or \
@@ -21,7 +21,7 @@ def main():
             lexeme.delete()
             n += 1
     
-    print '%d deleted' % n
+    print('%d deleted' % n)
 
 
 if __name__ == '__main__':

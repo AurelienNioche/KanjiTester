@@ -7,7 +7,9 @@
 #  Copyright 2008 Lars Yencken. All rights reserved.
 # 
 
-from itertools import imap, izip
+# from itertools import imap, izip
+
+from functools import reduce
 
 import consoleLog
 from cjktools import scripts
@@ -47,21 +49,19 @@ class SegmentedSeqPlugin(UserModelPlugin):
     """
     def update(self, response):
         """Update our error model from a user's response."""
-        error_dist = models.ErrorDist.objects.get(user=response.user,
-                                                  tag=self.dist_name)
+        error_dist = models.ErrorDist.objects.get(user=response.user, tag=self.dist_name)
         question = response.question
         base_segs = question.annotation.split(u'|')
         response_segs = response.option.annotation.split(u'|')
-        distractor_sets = map(set, zip(
+        distractor_sets = list(map(set, zip(
                 *[o['annotation'].split('|')
                 for o in question.multiplechoicequestion.options.values(
                         'annotation')
                 if o['annotation'] != response.option.annotation]
-            ))
+            )))
         assert len(base_segs) == len(response_segs) == len(distractor_sets)
 
-        for base_seg, response_seg, distractor_segs in \
-                    izip(base_segs, response_segs, distractor_sets):
+        for base_seg, response_seg, distractor_segs in zip(base_segs, response_segs, distractor_sets):
             if scripts.script_types(base_seg) != scripts.Script.Kanji:
                 continue
             sub_dist = models.ProbDist.from_query_set(
@@ -69,7 +69,7 @@ class SegmentedSeqPlugin(UserModelPlugin):
             e = settings.UPDATE_EPSILON
 
             try:
-                m = max(imap(sub_dist.__getitem__, distractor_segs)) + e
+                m = max(map(sub_dist.__getitem__, distractor_segs)) + e
                 existing_score = sub_dist[response_seg]
             except KeyError:
                 raise UpdateError(
@@ -123,7 +123,7 @@ def load_priors(syllabus, force=False):
     plugins = load_plugins()
 
     log.start('Initialising prior distributions', nSteps=len(plugins))
-    for plugin_obj in plugins.itervalues():
+    for plugin_obj in plugins.values():
         plugin_obj.init_priors(syllabus, force=force)
     log.finish()
 

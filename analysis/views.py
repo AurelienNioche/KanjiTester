@@ -12,12 +12,13 @@ import operator
 import numpy
 import itertools
 import json
+from functools import reduce
 
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.http import HttpResponse, Http404
-
 from django.conf import settings
+
 from simplestats import basic_stats, mean
 
 from analysis.decorators import staff_only
@@ -26,7 +27,7 @@ from util import charts
 from tutor import study_list
 from user_model import models as usermodel_models
 
-import stats
+from . import stats
 
 
 @staff_only

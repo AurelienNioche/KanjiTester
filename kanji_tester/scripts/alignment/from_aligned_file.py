@@ -16,7 +16,7 @@ from cjktools.common import sopen
 
 from util.alignment import AlignedFile
 
-import align_core
+import kanji_tester.scripts.alignment.align_core as align_core
 
 _log = consoleLog.default
 
@@ -35,7 +35,7 @@ def from_aligned_file(syllabus_name, aligned_file, output_file):
     for alignment in alignments:
         key = (alignment.grapheme, alignment.phoneme)
         if key in include_set:
-            print >> o_stream, alignment.to_line()
+            print(alignment.to_line(), file=o_stream)
             include_set.remove(key)
     o_stream.close()
 
@@ -43,7 +43,7 @@ def from_aligned_file(syllabus_name, aligned_file, output_file):
         _log.finish('%d entries not found (see missing.log)' % len(include_set))
         o_stream = sopen('missing.log', 'w')
         for surface, reading in sorted(include_set):
-            print >> o_stream, '%s %s:%s %s' % (surface, reading, surface, reading)
+            print('%s %s:%s %s' % (surface, reading, surface, reading), file=o_stream)
         o_stream.close()
     else:
         _log.finish('All entries found')

@@ -88,12 +88,12 @@ def _bin_sequence(x_min, x_max, n_bins):
     eps = 1e-8
     interval = (x_max - x_min) / float(n_bins)
     bin_boundaries = []
-    for i in xrange(n_bins + 1):
+    for i in range(n_bins + 1):
         bin_boundaries.append(x_min + i*interval)
     bin_boundaries[0] -= eps
     bin_boundaries[-1] += eps
     
-    for i in xrange(n_bins):
+    for i in range(n_bins):
         yield bin_boundaries[i], bin_boundaries[i + 1]
 
 
@@ -109,7 +109,7 @@ def approximate(data, n_points=10, x_min=None, x_max=None):
     interval = float((x_max - x_min) / n_points)
     eps = 1e-8
     results = []
-    for bin_no in xrange(n_points):
+    for bin_no in range(n_points):
         start_interval = bin_no * interval
         end_interval = (bin_no + 1) * interval
         if bin_no == n_points - 1:
@@ -129,7 +129,7 @@ def approximate(data, n_points=10, x_min=None, x_max=None):
     return results
 
 
-def group_by_points(data, y_max=sys.maxint, y_min=None):
+def group_by_points(data, y_max=float("inf"), y_min=None):
     """
     Similar to approximate(), but more useful when the x axis is discrete.
     Instead of quantizing the x axis, we just group points by x values, and
@@ -200,7 +200,7 @@ def get_time_between_tests():
     for user_id, user_tests in groupby(test_sets, lambda t: t.user_id):
         if user_id in ignore_users:
             continue
-        last_test = user_tests.next().start_time
+        last_test = next(user_tests).start_time
         
         for test_set in user_tests:
             time_diff = _scale_time_delta(
@@ -360,7 +360,7 @@ def get_users_by_n_tests():
     data = list(cursor.fetchall())
 
     # Make cumulative
-    for i in xrange(len(data) - 1, 0, -1):
+    for i in range(len(data) - 1, 0, -1):
         label, value = data[i-1]
         data[i-1] = (label, value + data[i][1])
 
@@ -419,7 +419,7 @@ def get_users_by_n_responses():
     data = list(cursor.fetchall())
 
     # Make cumulative
-    for i in xrange(len(data) - 1, 0, -1):
+    for i in range(len(data) - 1, 0, -1):
         label, value = data[i-1]
         data[i-1] = (label, value + data[i][1])
 
@@ -860,7 +860,7 @@ def get_pivot_response_stats(pivot_id, pivot_type):
     plugin_map = drill_models.QuestionPlugin.objects.in_bulk(dist_map.keys())
     
     results = [(plugin_map[plugin_id].name, dist) \
-            for (plugin_id, dist) in dist_map.iteritems()]
+            for (plugin_id, dist) in dist_map.items()]
     combined_dist = FreqDist()
     for name, dist in results:
         combined_dist.inc(name, dist.N())
@@ -1015,7 +1015,7 @@ def _seq_len(seq):
     """
     Returns the length of a sequence (by iterating over it).
     
-    >>> _seq_len(xrange(100))
+    >>> _seq_len(range(100))
     100
     """
     i = 0
@@ -1091,8 +1091,7 @@ def _calculated_item_change(response_data):
     """
     fs = ConditionalFreqDist()
     
-    response_data = [(pid, pt, i, ic) for (i, (pid, pt, ic)) in 
-            enumerate(response_data)]
+    response_data = [(pid, pt, i, ic) for (i, (pid, pt, ic)) in enumerate(response_data)]
     response_data.sort()
 
     for (pivot_id, pivot_type), responses in groupby(response_data, lambda r: (r[0], r[1])):
@@ -1100,7 +1099,7 @@ def _calculated_item_change(response_data):
         if len(responses) < 2:
             continue
         
-        for i in xrange(len(responses) - 1):
+        for i in range(len(responses) - 1):
             from_state = responses[i][-1] and 'k' or 'u'
             to_state = responses[i + 1][-1] and 'k' or 'u'
             fs[from_state].inc(to_state)

@@ -152,13 +152,13 @@ class VowelLengthModel(SimpleAlternationModel):
 
             else:
                 # Other consonants are more limited.
-                for vowel, long_vowel in vowel_pairs.iteritems():
+                for vowel, long_vowel in vowel_pairs.items():
                     kana = table.from_coords(consonant, vowel)
                     pairs.append((kana, kana + long_vowel))
 
                 y_prefix = table.from_coords(consonant, u'い')
                 assert y_prefix
-                for vowel, y_suffix in vowel_to_y_form.iteritems():
+                for vowel, y_suffix in vowel_to_y_form.items():
                     long_vowel = vowel_pairs[vowel]
                     pairs.append((
                             y_prefix + y_suffix,
