@@ -105,7 +105,7 @@ Prepare mysql
 Install python librairies
 
 
-    pip install django
+    pip install django numpy nltk
 
 ### Other info
 
