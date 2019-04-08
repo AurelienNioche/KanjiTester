@@ -3,7 +3,7 @@
 Adapted from https://github.com/larsyencken/kanjitester
 
 
-Install mysql
+Install mysql and configure interaction with Python
 
     brew install mysql
     brew unlink mysql
@@ -15,15 +15,28 @@ Install mysql
     
 Prepare mysql
 
+
+* Connect to mysql
+    
+    
     mysql -u root -p
+
+* Create the database 
+   
     
     CREATE DATABASE KanjiTester;
-    
+
+* Create the user and give him the privileges
+
+
     CREATE USER 'admin'@'localhost' IDENTIFIED BY 'password';
     GRANT ALL PRIVILEGES ON *.* TO 'admin'@'localhost';
     ALTER USER 'admin'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
     FLUSH PRIVILEGES;
     
+* Disconnect
+
+
     exit
     
    
