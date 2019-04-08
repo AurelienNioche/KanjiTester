@@ -72,7 +72,7 @@ class Checksum(models.Model):
                         Delete any existing tag when the current tag is dirty.
         """
         if not files:
-            raise ValueError, "Need at least one file to checksum"
+            raise (ValueError, "Need at least one file to checksum")
 
         if dep_tags:
             latest_dep = max(Checksum.get_timestamp(t) for t in dep_tags)

@@ -22,26 +22,14 @@ Adapted from https://github.com/larsyencken/kanjitester
       
 ## Configuration
 
-Install mysql and configure interaction with Python
 
-    brew unlink mysql
-    brew install mysql-connector-c
-    sed -i -e 's/libs="$libs -l "/libs="$libs -lmysqlclient -lssl -lcrypto"/g' /usr/local/bin/mysql_config
-    pip install MySQL-python
-    brew unlink mysql-connector-c
-    brew link --overwrite mysql
-    
-
-Create virtual env
+Create virtual env for Python, install dependencies...
 
 
 * Install virtual env
 
 
     pip3 install virtualenv
-
-
-
 
 
 * Create and activate virtual environment
@@ -67,7 +55,22 @@ Compile Cython module
 
 
     python setup.py build_ext --inplace
+    
+    
+Install python librairies
 
+
+    pip install django numpy nltk
+    
+
+Configure interaction of mysql with Python
+
+    brew unlink mysql
+    brew install mysql-connector-c
+    sed -i -e 's/libs="$libs -l "/libs="$libs -lmysqlclient -lssl -lcrypto"/g' /usr/local/bin/mysql_config
+    pip install MySQL-python
+    brew unlink mysql-connector-c
+    brew link --overwrite mysql
 
 
 Prepare mysql
@@ -100,12 +103,7 @@ Prepare mysql
 
 
     exit
-    
-    
-Install python librairies
 
-
-    pip install django numpy nltk
 
 ### Other info
 

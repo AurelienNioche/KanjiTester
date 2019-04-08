@@ -13,7 +13,7 @@ Plugin for visual similarity.
 
 import consoleLog
 from simplestats.comb import iunique_pairs
-from cjktools.errors import DomainError
+# from cjktools.errors import DomainError
 from django.core.exceptions import ObjectDoesNotExist
 
 from user_model import models as usermodel_models, plugin_api as user_model_api
@@ -21,8 +21,8 @@ from drill import plugin_api as drill_api, support
 from lexicon import models as lexicon_models
 from kanji_tester import settings
 
-import metrics
-import threshold_graph
+import plugins.visual_similarity.metrics as metrics
+import plugins.visual_similarity.threshold_graph as threshold_graph
 
 _default_metric_name = 'stroke edit distance'
 _log = consoleLog.default
@@ -67,8 +67,8 @@ class VisualSimilarity(user_model_api.SegmentedSeqPlugin):
 
             try:
                 weight = metric(kanji_a, kanji_b)
-            except DomainError, e:
-                kanji = e.message
+            except Exception as e:
+                kanji = str(e)
                 ignore_set.add(kanji)
                 continue
 
@@ -97,10 +97,8 @@ class VisualSimilarity(user_model_api.SegmentedSeqPlugin):
                 )
 
 
-# ----------------------------------------------------------------------------#
-
 class VisualSimilarityDrills(drill_api.MultipleChoiceFactoryI):
-    "Distractors are sampled from the user error distribution."
+    """Distractors are sampled from the user error distribution."""
     question_type = 'gp'
     requires_kanji = True
     uses_dist = "kanji' | kanji"
@@ -155,10 +153,10 @@ class VisualSimilarityDrills(drill_api.MultipleChoiceFactoryI):
         segments = list(pivot)  # Simple segments
         if question.pivot_type == 'w':
             distractors, annotation_map = support.build_word_options(
-                segments, error_dist, exclude_set=set([pivot]))
+                segments, error_dist, exclude_set={pivot})
         else:
             distractors, annotation_map = support.build_kanji_options(
-                question.pivot, error_dist, exclude_set=set([pivot]))
+                question.pivot, error_dist, exclude_set={pivot})
         annotation_map[pivot] = u'|'.join(segments)
         question.add_options(distractors, question.pivot,
                              annotation_map=annotation_map)
