@@ -31,7 +31,7 @@ _checksum_tag = 'lexicon'
 
 def load_lexicon(filename=_jmdict_path):
     """"Reloads the lexicon into the database."""
-    log.start('Rebuilding the lexicon', nSteps=5)
+    log.start('Rebuilding the lexicon', n_steps=5)
     if not Checksum.needs_update(_checksum_tag, _dependencies + [filename]):
         log.finish('Already up-to-date')
         return
@@ -39,7 +39,7 @@ def load_lexicon(filename=_jmdict_path):
     log.log('Loading probability distributions')
     models.initialise()
     
-    log.start('Loading JMdict', nSteps=2)
+    log.start('Loading JMdict', n_steps=2)
     _clear_lexicon()
     log.log('Reading from %s' % path.basename(filename))
     iStream = gzip.open(filename, 'rt')
@@ -116,7 +116,7 @@ def _populate_stacks(lexeme_node, lexeme_id, lexeme_surface_stack,
 
 
 def _store_lexemes(lexeme_nodes):
-    log.start('Storing lexemes', nSteps=6)
+    log.start('Storing lexemes', n_steps=6)
     cursor = connection.cursor()
 
     log.log('Clearing tables')

@@ -13,7 +13,7 @@ from __future__ import with_statement
 import sys
 import optparse
 from consoleLog import default as _log
-from consoleLog import withProgress
+from consoleLog import with_progress
 import json
 
 from user_profile import models as userprofile_models
@@ -27,7 +27,7 @@ EXCLUDE_EMAILS = (
 
 
 def export_logs():
-    _log.start('Dumping logs', nSteps=2)
+    _log.start('Dumping logs', n_steps=2)
 
     latest = drill_models.Response.objects.exclude(
                 user__email__in=EXCLUDE_EMAILS
@@ -64,7 +64,7 @@ def _dump_responses(filename):
     _log.log(filename + ' ', newLine=False)
     with open(filename, 'w') as ostream:
         users = User.objects.exclude(email__in=EXCLUDE_EMAILS)
-        for user in withProgress(users):
+        for user in with_progress(users):
             for response in drill_models.MultipleChoiceResponse.objects.filter(
                     user=user):
                 question = response.question

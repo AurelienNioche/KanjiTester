@@ -33,7 +33,7 @@ class Command(BaseCommand):
             if hasattr(app_module, 'build'):
                 apps_with_build.append((app_path, app_module))
 
-        _log.start('Building kanji_tester', nSteps=len(apps_with_build))
+        _log.start('Building kanji_tester', n_steps=len(apps_with_build))
         for app_path, app_module in apps_with_build:
             app_module.build()
         _log.finish()

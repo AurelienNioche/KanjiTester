@@ -16,10 +16,9 @@ __all__ = [
     ]
 
 
-
 import consoleLog.consoleLog as consoleLog
 import consoleLog.progressBar as progressBar
-from consoleLog.progressBar import withProgress
+from consoleLog.progressBar import with_progress
 import consoleLog.slot as slot
 
 
@@ -41,11 +40,11 @@ def demo():
     sl(1.0)
     log.log('Substep 2')
     sl(1.0)
-    log.log('Substep 3 with progress ', newLine=False)
-    for _ in withProgress(range(100)):
+    log.log('Substep 3 with progress ', new_line=False)
+    for _ in with_progress(range(100)):
         sl(0.1)
-    log.start('Substep 4 with slot', nSteps=1)
-    log.log('', newLine=False)
+    log.start('Substep 4 with slot', n_steps=1)
+    log.log('', new_line=False)
     s = slot.Slot()
     j = 0
     for _ in range(637):

@@ -41,14 +41,14 @@ class VisualSimilarity(user_model_api.SegmentedSeqPlugin):
 
             prior_dist.priorpdf_set.all().delete()
 
-        _log.start("Building %s dist" % self.dist_name, nSteps=3)
+        _log.start("Building %s dist" % self.dist_name, n_steps=3)
 
         _log.log('Fetching syllabus kanji')
         kanji_set = set([k_row.kanji for k_row in
                          lexicon_models.Kanji.objects.filter(
                              partialkanji__syllabus=syllabus)])
 
-        _log.log('Generating similarity graph ', newLine=False)
+        _log.log('Generating similarity graph ', new_line=False)
         graph = self._build_graph(kanji_set)
 
         _log.log('Storing priors')
@@ -60,7 +60,7 @@ class VisualSimilarity(user_model_api.SegmentedSeqPlugin):
         metric = StrokeEditDistance()  # metrics.strmetric_library[_default_metric_name]
         graph = threshold_graph.ThresholdGraph(settings.MAX_GRAPH_DEGREE)
         ignore_set = set()
-        for kanji_a, kanji_b in consoleLog.withProgress(iunique_pairs(kanji_set), 100):
+        for kanji_a, kanji_b in consoleLog.with_progress(iunique_pairs(kanji_set), 100):
             if kanji_a in ignore_set or kanji_b in ignore_set:
                 continue
 

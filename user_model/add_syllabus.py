@@ -32,7 +32,7 @@ _log = consoleLog.default
 
 def list_syllabi():
     syllabi = bundle.list_names()
-    _log.start('Available syllabi', nSteps=len(syllabi))
+    _log.start('Available syllabi', n_steps=len(syllabi))
     for syllabus_name in syllabi:
         _log.log(syllabus_name)
     _log.finish()
@@ -40,7 +40,7 @@ def list_syllabi():
 
 def add_all_syllabi(force=False):
     syllabi = bundle.list_names()
-    _log.start('Adding all syllabi', nSteps=len(syllabi))
+    _log.start('Adding all syllabi', n_steps=len(syllabi))
 
     dependencies = []
     for syllabus in syllabi:
@@ -138,7 +138,7 @@ def _store_word_surfaces(syllabus, syllabus_bundle):
     replacing any unknown kanji with their readings. If this results in a
     surface known to JMdict, then we add that surface to the lexeme's list.
     """
-    _log.start('Building lexeme surfaces', nSteps=2)
+    _log.start('Building lexeme surfaces', n_steps=2)
 
     _store_reduced_surfaces(syllabus, syllabus_bundle)
 
@@ -162,7 +162,7 @@ def _store_reduced_surfaces(syllabus, syllabus_bundle):
     as part of the syllabus. In these cases, we see if variants of the surface
     which don't use the missing kanji are also available.
     """
-    _log.start('Finding reduced surfaces', nSteps=1)
+    _log.start('Finding reduced surfaces', n_steps=1)
     n_aligned = 0
     for alignment in syllabus_bundle.alignments:
         if not alignment.has_kanji():
@@ -199,7 +199,7 @@ def _store_words(syllabus, syllabus_bundle):
     Try to find a matching lexicon word for each word in the syllabus, then
     store the limited knowledge we have about it in a partial lexeme object.
     """
-    _log.start('Parsing word list', nSteps=1)
+    _log.start('Parsing word list', n_steps=1)
     n_ok = 0
     skipped_words = []
     for word in syllabus_bundle.words: 
@@ -236,7 +236,7 @@ def _prune_readings(known_readings, syllabus):
     Given a map of kanji readings, we prune the map back to only those which
     are valid readings from our lexicon, and store those.
     """
-    _log.start('Matching with known readings', nSteps=1)
+    _log.start('Matching with known readings', n_steps=1)
     n_kanji = 0
     n_fallback = 0
     for partial_kanji in syllabus.partialkanji_set.all():

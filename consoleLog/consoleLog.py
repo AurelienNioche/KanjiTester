@@ -12,7 +12,7 @@ A simple logging module which allows hierarchical logging without centralized
 control.
 
 >>> log = ConsoleLogger()
->>> log.start('ABC', nSteps=3)
+>>> log.start('ABC', n_steps=3)
 ABC
 >>> log.log('A')
 ├─ A
@@ -25,7 +25,6 @@ ABC
 
 
 import sys
-# import codecs
 
 _default_encoding = 'utf8'
 
@@ -40,16 +39,16 @@ class ConsoleLogger(object):
         self.logStack = []
         self.trim = trim
 
-    def start(self, message, nSteps=None):
+    def start(self, message, n_steps=None):
         """
         Starts a new hierarchical logging section. Every call to start() must
         be later matched by a call to finish().
         """
         self.log(message)
-        self.logStack.append(_SectionPadding(nSteps=nSteps))
+        self.logStack.append(_SectionPadding(n_steps=n_steps))
         return
 
-    def log(self, message, newLine=True):
+    def log(self, message, new_line=True):
         """
         Logs a message, with an optional newline. The most common case for
         not using the newline is for subsequent use of a progress bar.
@@ -57,29 +56,25 @@ class ConsoleLogger(object):
         if self.logStack:
             padding = []
             for levelLogger in self.logStack[:-1]:
-                padding.append(levelLogger.getIntermediatePadding())
-            padding.append(self.logStack[-1].getCurrentPadding())
+                padding.append(levelLogger.get_intermediate_padding())
+            padding.append(self.logStack[-1].get_current_padding())
         else:
             padding = ''
-        oLine = ''.join(padding) + f'{message}'   # % (u''.join(padding), message)
-        if self.trim and len(oLine) > self.trim:
-            oLine = oLine[:self.trim - 3] + '...'
+        o_line = ''.join(padding) + f'{message}'   # % (u''.join(padding), message)
+        if self.trim and len(o_line) > self.trim:
+            o_line = o_line[:self.trim - 3] + '...'
 
-        # if isinstance(oLine, bytes):
-        #     oLine = str(oLine)
-
-        # print(type(oLine))
-        print(oLine, file=self.oStream)
-        # self.oStream.write(oLine)
-        if not newLine:
+        if new_line:
+            print(o_line, file=self.oStream)
             self.oStream.flush()
-            # print(file=self.oStream)
+        else:
+            print(o_line, file=self.oStream, end=' ')
 
     def space(self):
         if self.logStack:
             padding = []
             for levelLogger in self.logStack:
-                padding.append(levelLogger.getIntermediatePadding())
+                padding.append(levelLogger.get_intermediate_padding())
             padding = u''.join(padding)
         else:
             padding = u''
@@ -92,10 +87,10 @@ class ConsoleLogger(object):
         """
         padding = []
         for levelLogger in self.logStack[:-1]:
-            padding.append(levelLogger.getIntermediatePadding())
+            padding.append(levelLogger.get_intermediate_padding())
         last = self.logStack.pop()
-        padding.append(last.getLastPadding())
-        if last.needsFinish():
+        padding.append(last.get_last_padding())
+        if last.needs_finish():
             print(u"%s%s" % (u''.join(padding), message), file=self.oStream)
 
 
@@ -104,26 +99,27 @@ class _SectionPadding(object):
     A manager for the amount of padding needed for any given log line, as well
     as any embellishments needed to indicate hierarchy.
     """
-    def __init__(self, nSteps=None):
+    def __init__(self, n_steps=None):
         """Private constructor used internally."""
-        self.nSteps = nSteps
+        self.nSteps = n_steps
         self.currentStep = 0
 
-    def getIntermediatePadding(self):
+    def get_intermediate_padding(self):
         if self.currentStep == self.nSteps:
             return u'   '
         else:
             return u'│  '
 
-    def getCurrentPadding(self):
+    def get_current_padding(self):
         self.currentStep += 1
         if self.currentStep == self.nSteps:
             return u'└─ '
         else:
             return u'├─ '
 
-    def needsFinish(self):
+    def needs_finish(self):
         return self.currentStep != self.nSteps
 
-    def getLastPadding(self):
+    @staticmethod
+    def get_last_padding():
         return u'└─ '

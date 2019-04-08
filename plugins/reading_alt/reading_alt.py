@@ -21,7 +21,7 @@ class KanjiReadingModel(usermodel_api.SegmentedSeqPlugin):
         pass
 
     def init_priors(self, syllabus, force=False):
-        _log.start('Building %s dist' % self.dist_name, nSteps=4)
+        _log.start('Building %s dist' % self.dist_name, n_steps=4)
 
         # Ensure the reading database is pre-built
         from . import reading_database
@@ -41,20 +41,22 @@ class KanjiReadingModel(usermodel_api.SegmentedSeqPlugin):
         _log.log('Storing readings')
         self._import_readings(prior_dist, kanji_set)
 
-        _log.start('Padding reading lists', nSteps=1)
+        _log.start('Padding reading lists', n_steps=1)
         self._pad_readings(prior_dist)
         _log.finish()
 
         _log.finish()
 
-    def _fetch_syllabus_kanji(self, syllabus):
+    @staticmethod
+    def _fetch_syllabus_kanji(syllabus):
         kanji_set = set(row['kanji'] for row in
                         lexicon_models.Kanji.objects.filter(
                             partialkanji__syllabus=syllabus
                         ).values('kanji'))
         return kanji_set
 
-    def _import_readings(self, prior_dist, kanji_set):
+    @staticmethod
+    def _import_readings(prior_dist, kanji_set):
         """Copies the reading database directly into an prior distribution."""
         cursor = connection.cursor()
         quote_name = connection.ops.quote_name
@@ -73,7 +75,8 @@ class KanjiReadingModel(usermodel_api.SegmentedSeqPlugin):
         cursor.execute('COMMIT')
         return
 
-    def _pad_readings(self, prior_dist):
+    @staticmethod
+    def _pad_readings(prior_dist):
         """
         Once the reading distribution has been copied over, we still have the
         problem that there may not be enough erroneous readings to meet the
@@ -81,10 +84,9 @@ class KanjiReadingModel(usermodel_api.SegmentedSeqPlugin):
 
         To circumvent this problem, we pad with random distractors.
         """
-        _log.log('Padding results ', newLine=False)
-        conditions = set(o['condition'] for o in \
-                         prior_dist.density.all().values('condition'))
-        for (condition,) in consoleLog.withProgress(conditions):
+        _log.log('Padding results ', new_line=False)
+        conditions = set(o['condition'] for o in prior_dist.density.all().values('condition'))
+        for (condition,) in consoleLog.with_progress(conditions):
             exclude_set = set(
                 o.reading for o in lexicon_models.KanjiReading.objects.filter(kanji__kanji=condition))
             n_stored = prior_dist.density.filter(condition=condition).exclude(
@@ -107,8 +109,6 @@ class KanjiReadingModel(usermodel_api.SegmentedSeqPlugin):
 
             sub_dist.normalise()
             sub_dist.save_to(prior_dist.density, condition=condition)
-
-        return
 
 
 class ReadingAlternationQuestions(drill_api.MultipleChoiceFactoryI):
@@ -163,7 +163,7 @@ class ReadingAlternationQuestions(drill_api.MultipleChoiceFactoryI):
         return question
 
     def get_kanji_question(self, partial_kanji, user):
-        "See parent."
+        """See parent."""
         error_dist = usermodel_models.ErrorDist.objects.get(user=user,
                                                             tag=self.uses_dist)
         exclude_set = set(row['reading'] for row in \

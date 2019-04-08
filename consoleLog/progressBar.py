@@ -27,7 +27,7 @@ class IllegalNestingError(Exception):
     pass
 
 
-def withProgress(seq, modValue=1, size=None, force=False):
+def with_progress(seq, mod_value=1, size=None, force=False):
     """
     A wrapper for sequence which adds a progress bar.
     """
@@ -53,7 +53,7 @@ def withProgress(seq, modValue=1, size=None, force=False):
     for item in seq:
         yield item
         count += 1
-        if count % modValue == 0:
+        if count % mod_value == 0:
             progress.update(count)
 
     progress.finish()
@@ -75,10 +75,11 @@ def tick():
 
 class ProgressBar:
     """A progress bar which gets printed to stdout."""
-    def __init__(self, stringSize=20):
+    def __init__(self, string_size=20):
         """Creates a new instance, setting the size as needed."""
+
         self._slot = slot.Slot()
-        self._stringSize = stringSize
+        self._stringSize = string_size
         self._count = 0
         self._totalCount = None
         self._lastRotation = 0
@@ -93,26 +94,22 @@ class ProgressBar:
         """Resets the progress bar to initial conditions."""
         self._count = 0
         self._totalCount = None
-        self._lastLineSize = None
         self._lastRotation = 0
         self._startTime = None
-
-        return
     
-    def start(self, totalCount):
+    def start(self, total_count):
         """
         Starts the progress bar. This will be the first output from the
         bar. At this stage it needs the total count so that it can
         calculate percentages.
 
-        @param totalCount: The count which represents 'finished'.
+        @param total_count: The count which represents 'finished'.
         """
         assert self._count == 0, "Progress bar already started, call reset()"
-        assert totalCount > 0, "Progress bar needs a non-zero total count"
-        self._totalCount = totalCount
-        progressLine = '[' + shellColor.color('/', 'red') + \
-                (self._stringSize-1)*' ' + ']   0%'
-        self._slot.update(progressLine)
+        assert total_count > 0, "Progress bar needs a non-zero total count"
+        self._totalCount = total_count
+        progress_line = '[' + shellColor.color('/', 'red') + (self._stringSize-1)*' ' + ']   0%'
+        self._slot.update(progress_line)
         self._startTime = time.time()
 
     def update(self, count):
@@ -134,42 +131,41 @@ class ProgressBar:
 
         self._lastRotation = (self._lastRotation + 1) % self._numRotations
         if percent < 100:
-            rotChar = self._rotation[self._lastRotation]
+            rot_char = self._rotation[self._lastRotation]
         else:
-            rotChar = ''
+            rot_char = ''
 
-        progressLine = '[' + shellColor.color(n*'-' + rotChar, 'red') + \
-                m*' ' + '] ' + str('%3d%%' % percent)
-        self._slot.update(progressLine)
+        progress_line = '[' + shellColor.color(n*'-' + rot_char, 'red') + m*' ' + '] ' + str('%3d%%' % percent)
+        self._slot.update(progress_line)
 
     def tick(self):
-        "Perform a quick update."
+        """Perform a quick update."""
         self.update(self._count)
 
     def fractional(self, fraction):
-        "Set a fractional percentage completion, e.g. 0.3333 -> 33%."
+        """Set a fractional percentage completion, e.g. 0.3333 -> 33%."""
         assert 0 <= fraction <= 1
         self.update(int(fraction * self._totalCount))
     
     def finish(self):
-        "Fixes to 100% complete, and writes the time taken."
+        """Fixes to 100% complete, and writes the time taken."""
         assert self._totalCount > 0, "Progress bar wasn't initialised"
         self.update(self._totalCount)
 
-        timeTaken = int(time.time() - self._startTime)
-        (mins, secs) = divmod(timeTaken, 60)
+        time_taken = int(time.time() - self._startTime)
+        (mins, secs) = divmod(time_taken, 60)
         if not mins:
-            timeString = ' (%ds)' % secs
+            time_string = ' (%ds)' % secs
         else:
             (hours, mins) = divmod(mins, 60)
             if not hours:
-                timeString = ' (%dm %ds)' % (mins, secs)
+                time_string = ' (%dm %ds)' % (mins, secs)
             else:
-                timeString = ' (%dh %dm %ds)' % (hours, mins, secs)
+                time_string = ' (%dh %dm %ds)' % (hours, mins, secs)
 
-        print(timeString, file=sys.stdout)
+        print(time_string, file=sys.stdout)
 
 
 if __name__ == '__main__':
-    for i in withProgress(range(100)):
+    for i in with_progress(range(100)):
         time.sleep(0.1)

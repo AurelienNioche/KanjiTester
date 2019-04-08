@@ -22,7 +22,7 @@ _log = consoleLog.default
 
 
 def from_aligned_file(syllabus_name, aligned_file, output_file):
-    _log.start('Extracting gp-aligned words', nSteps=4)
+    _log.start('Extracting gp-aligned words', n_steps=4)
 
     _log.log('Building set of expected words')
     include_set = set((w.surface, w.reading) for w in align_core.iter_words(syllabus_name))

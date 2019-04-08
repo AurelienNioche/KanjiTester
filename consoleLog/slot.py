@@ -16,8 +16,8 @@ class Slot(object):
     """
     A generic text slot which can be overwritten repeatedly.
     """
-    def __init__(self, text=u'', stream=sys.stdout):
-        if u'\n' in text:
+    def __init__(self, text='', stream=sys.stdout):
+        if '\n' in text:
             raise Exception('slots cannot undo newlines')
         self.stream = stream
         self.last_text = None
@@ -33,9 +33,9 @@ class Slot(object):
         #     text = text.encode('utf8')
 
         if self.last_text:
-            last_len = shellColor.realLen(self.last_text)
-            self.stream.write('\b' * shellColor.realLen(self.last_text))
-            this_len = shellColor.realLen(text)
+            last_len = shellColor.real_len(self.last_text)
+            self.stream.write('\b' * shellColor.real_len(self.last_text))
+            this_len = shellColor.real_len(text)
             if this_len < last_len:
                 text = text + ' ' * (last_len - this_len)
 

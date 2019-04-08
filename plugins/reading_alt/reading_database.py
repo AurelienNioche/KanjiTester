@@ -39,7 +39,7 @@ _alternation_models = [
 log = consoleLog.default
 
 
-class ReadingDatabase(object):
+class ReadingDatabase:
     """
     Builds the dynamic reading scoring part of the FOKS database.
     """
@@ -83,7 +83,7 @@ class ReadingDatabase(object):
         node in the subtree for that kanji. Each fixed depth in that subtree
         corresponds to an alternation model of some sort.
         """
-        log.start('Building alternation tree', nSteps=3)
+        log.start('Building alternation tree', n_steps=3)
         log.log('Adding base kanji set')
         root_node = AltTreeNode('root', '/')
         for kanji in kanji_set:
@@ -97,12 +97,12 @@ class ReadingDatabase(object):
                 for reading in kjdic[kanji].all_readings:
                     kanji_node.add_child(AltTreeNode(reading, 'b'))
 
-        log.start('Adding alternation models', nSteps=len(_alternation_models))
+        log.start('Adding alternation models', n_steps=len(_alternation_models))
         i = 0
         max_len = max(len(n) for (n, c, cl) in _alternation_models)
         pattern = '%%-%ds ' % max_len
         for model_name, model_code, model_class in _alternation_models:
-            log.log(pattern % model_name, newLine=False)
+            log.log(pattern % model_name, new_line=False)
             sys.stdout.flush()
             model_obj = model_class()
             cls._add_alternation_model(model_obj, model_code, root_node, first=(i == 0))
@@ -119,7 +119,7 @@ class ReadingDatabase(object):
         Stores the alternation tree to the database using the nested set
         abstraction.
         """
-        log.start('Storing alternation tree', nSteps=2)
+        log.start('Storing alternation tree', n_steps=2)
         # Walk the tree, numbering all nodes.
         log.log('Numbering tree nodes')
         cls._number_tree(alt_tree)
@@ -155,8 +155,7 @@ class ReadingDatabase(object):
         # Build our list of results.
         def iter_results(tree):
             for node in tree.walk():
-                yield (node.label, node.code, node.probability,
-                        node.left_visit, node.right_visit)
+                yield (node.label, node.code, node.probability, node.left_visit, node.right_visit)
             return
 
         # Insert them to the database.
@@ -193,7 +192,7 @@ class ReadingDatabase(object):
         @param root_node: The root node of the entire tree.
         @type root_node: TreeNode
         """
-        for kanji_node in consoleLog.withProgress(root_node.children.values()):
+        for kanji_node in consoleLog.with_progress(root_node.children.values()):
             kanji = kanji_node.label
             leaves = list(kanji_node.walk_leaves())
             for reading_node in leaves:
@@ -243,7 +242,7 @@ class ReadingDatabase(object):
                     pdf = entry['pdf'] / total
                     cdf += pdf
                     yield (kanji, reading, ''.join(sorted(entry['codes'])),
-                            pdf, cdf, leaf_path[-1].left_visit)
+                           pdf, cdf, leaf_path[-1].left_visit)
                 assert abs(cdf - 1.0) < 1e-8
             return
 
@@ -252,9 +251,9 @@ class ReadingDatabase(object):
         cursor = connection.cursor()
         cursor.execute('DELETE FROM reading_alt_kanjireading')
 
-        quoted_fields = tuple(connection.ops.quote_name(f) for f in
-            ['condition', 'symbol', 'alternations', 'pdf', 'cdf',
-            'reading_alternation_id'])
+        quoted_fields = tuple(connection.ops.quote_name(f)
+                              for f in
+                              ['condition', 'symbol', 'alternations', 'pdf', 'cdf', 'reading_alternation_id'])
         for results in groups_of_n(max_per_insert, all_results):
             cursor.executemany(
                     """
@@ -272,25 +271,36 @@ class ReadingDatabase(object):
 
 
 class AltTreeNode(TreeNode):
+
     def __init__(self, name, code, probability=0.0):
         TreeNode.__init__(
             self, label=name,
             attrib={'code': code, 'probability': probability})
         return
 
-    def make_property(name):
-        def getter(self):
-            return self.attrib[name]
+    @property
+    def probability(self):
+        return self.attrib['probability']
 
-        def setter(self, value):
-            self.attrib[name] = value
-            return
-        return property(getter, setter)
+    @property
+    def left_visit(self):
+        return self.attrib['left_visit']
 
-    probability = make_property('probability')
-    left_visit = make_property('left_visit')
-    right_visit = make_property('right_visit')
-    code = make_property('code')
+    @left_visit.setter
+    def left_visit(self, value):
+        self.attrib['left_visit'] = value
+
+    @property
+    def right_visit(self):
+        return self.attrib['right_visit']
+
+    @right_visit.setter
+    def right_visit(self, value):
+        self.attrib['right_visit'] = value
+
+    @property
+    def code(self):
+        return self.attrib['code']
 
 
 def build():

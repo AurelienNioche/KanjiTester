@@ -22,22 +22,22 @@ class UpdateError(Exception):
     pass
 
 
-class UserModelPlugin(object):
-    """
-    A plugin which provides one or more prior distributions across a form
-    of user error.
-    """
-    
-    def init_priors(self):
-        """Initialises the prior distributions that this plugin provides."""
-        raise Exception('not implemented')
+# class UserModelPlugin(object):
+#     """
+#     A plugin which provides one or more prior distributions across a form
+#     of user error.
+#     """
+#
+#     def init_priors(self):
+#         """Initialises the prior distributions that this plugin provides."""
+#         raise Exception('not implemented')
+#
+#     def update(self, _response):
+#         """Updates this error model from a user's response."""
+#         raise Exception('not implemented')
 
-    def update(self, _response):
-        """Updates this error model from a user's response."""
-        raise Exception('not implemented')
 
-
-class SegmentedSeqPlugin(UserModelPlugin):
+class SegmentedSeqPlugin:  # (UserModelPlugin):
     """
     A plugin which uses annotated segments in its options. Requires its
     class to define a "dist_name" attribute, and to define segment annotations
@@ -117,12 +117,12 @@ def load_plugins():
 def load_priors(syllabus, force=False):
     """Loads the prior distributions represented by each plugin."""
     log = consoleLog.default
-    log.start('Loading prior distributions', nSteps=2)
+    log.start('Loading prior distributions', n_steps=2)
 
     log.log('Loading plugins')
     plugins = load_plugins()
 
-    log.start('Initialising prior distributions', nSteps=len(plugins))
+    log.start('Initialising prior distributions', n_steps=len(plugins))
     for plugin_obj in plugins.values():
         plugin_obj.init_priors(syllabus, force=force)
     log.finish()
