@@ -1,10 +1,4 @@
-# 
-#  stroke.pyx
-#  kanji_tester
-#  
-#  Created by Lars Yencken on 2008-09-15.
-#  Copyright 2008 Lars Yencken. All rights reserved.
-# 
+# cython: language_level=3
 
 """
 Optimised Levenstein distance calculation between stroke signatures for two
@@ -13,8 +7,6 @@ kanji.
 
 import os
 
-from cjktools.errors import DomainError
-from cjktools.common import sopen
 
 from kanji_tester import settings
 
@@ -34,7 +26,7 @@ cdef class StrokeEditDistance:
         # Convert stroke sequence to integer sequences by constructing a 
         # mapping from stroke types to integers.
         self.signatures = {}
-        i_stream = sopen(_strokes_file)
+        i_stream = open(_strokes_file, 'r')
         for i, line in enumerate(i_stream):
             kanji, raw_strokes = line.rstrip().split()
             raw_strokes = raw_strokes.split(',')
@@ -60,7 +52,7 @@ cdef class StrokeEditDistance:
             s_py = self.signatures[kanji_a]
             t_py = self.signatures[kanji_b]
         except KeyError, e:
-            raise DomainError, e
+            raise (ValueError, e)
 
         return edit_distance(s_py, t_py)
 
@@ -69,7 +61,7 @@ cdef class StrokeEditDistance:
             s_py = self.signatures[kanji_a]
             t_py = self.signatures[kanji_b]
         except KeyError, e:
-            raise DomainError, e
+            raise (ValueError, e)
 
         result = edit_distance(s_py, t_py)
         return float(result) / max(len(s_py), len(t_py))
