@@ -121,3 +121,9 @@ user_model/migrations/0001_initial.py
 user_profile/migrations/0001_initial.py
 drill/migrations/0002_auto_20190405_1408.py
 plugins/visual_similarity/metrics/stroke.c
+doc/modelling.aux
+doc/modelling.out
+% doc/modelling.pdf
+doc/modelling.synctex.gz
+doc/modelling.toc
+plugins/reading_alt/migrations/0002_auto_20190408_1329.py
